@@ -1,6 +1,6 @@
+from app.main import db
 from app.main.model.user import User
 from ..service.blacklist_service import save_token
-
 
 class Auth:
     
@@ -54,3 +54,32 @@ class Auth:
                 'message': 'Provide a valid auth token.'
             }
             return response_object, 403
+
+    @staticmethod
+    def get_logged_in_user(new_request):
+        auth_token = new_request.headers.get('Authorization')
+        if auth_token:
+            resp = User.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                user = User.query.filter_by(id=resp).first()
+                response_object = {
+                    'status':'success',
+                    'data': {
+                        'user_id': user.id,
+                        'email': user.email,
+                        'username': user.username,
+                        'user_type': user.user_type
+                    }
+                }
+                return response_object, 200
+            response_object = {
+                'status': 'fail',
+                'message': resp
+            }
+            return response_object, 401
+        else:
+            response_object = {
+                'status':'fail',
+                'message':'Please provide a valid token.'
+            }
+            return response_object, 401

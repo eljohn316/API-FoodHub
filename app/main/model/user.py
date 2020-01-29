@@ -2,10 +2,13 @@ from .. import db, flask_bcrypt
 import datetime
 import jwt
 from app.main.model.blacklist import BlacklistToken
+from app.main.model import restaurant
 from ..config import key
 
 class User(db.Model):  
+    
     """ User Model"""
+
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -15,6 +18,8 @@ class User(db.Model):
     user_type = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(50), unique=True)
     password_hash = db.Column(db.String(100))
+    
+    restaurants = db.relationship('Restaurant', backref='restaurant_owner')
 
     @property
     def password(self):

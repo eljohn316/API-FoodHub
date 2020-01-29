@@ -17,3 +17,12 @@ class AuthDto:
         'email': fields.String(required=True, description='The email address'),
         'password': fields.String(required=True, description='The user password '),
     })
+
+class RestaurantDto:
+    api = Namespace('restaurant', description='restaurant related operations')
+    restaurant = api.model('restaurant', {
+        'name': fields.String(required=True, description='restaurant name'),
+        'restaurant_type': fields.String(required=True, description='restaurant type'),
+        'location': fields.String(required=True, description='restaurant location'),
+        'contact_information': fields.String(required=True, description='restaurant contact information')
+    })

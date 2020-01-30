@@ -44,32 +44,3 @@ def generate_token(user):
             'message': 'Some error occurred. Please try again.'
         }
         return response_object, 401
-
-def get_current_user(new_request):
-    auth_token = new_request.headers.get('Authorization')
-    if auth_token:
-        id_resp = User.decode_auth_token(auth_token)
-        user = User.query.filter_by(id=id_resp).first()
-        if user:
-            response_object = {
-                'status':'success',
-                'data': {
-                    'user_id': user.id,
-                    'email': user.email,
-                    'username': user.username,
-                    'user_type': user.user_type
-                }
-            }
-            return response_object, 200
-        else:
-            response_object = {
-                'status':'fail',
-                'message':'Please provide a valid token.'
-            }
-            return response_object, 401
-    else:
-        response_object = {
-            "status": "fail",
-            "message": "Provide a valid authorized token."
-        }
-        return response_object, 401

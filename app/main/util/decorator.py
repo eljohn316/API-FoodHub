@@ -35,12 +35,12 @@ def owner_required(f):
             return data, status
         
         owner = token.get('user_type')
-        if owner != 'Owner':
+        if owner != "Owner":
             response_object = {
                 'status':'fail',
                 'message': 'Owner token required.'
             }
             return response_object, 401 
         
-        return f(**args,**kwargs)
+        return f(*args,**kwargs)
     return decorated

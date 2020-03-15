@@ -10,7 +10,7 @@ class UserDto:
         'password': fields.String(required=True, description='user password'),
         'user_type': fields.String(required=True, description='user type')
     })
-    
+
 class AuthDto:
     api = Namespace('auth', description='authentication related operations')
     user_auth = api.model('auth_details', {
@@ -18,9 +18,11 @@ class AuthDto:
         'password': fields.String(required=True, description='The user password '),
     })
 
+
 class RestaurantDto:
     api = Namespace('restaurant', description='restaurant related operations')
     restaurant = api.model('restaurant', {
+        'public_id': fields.String(required=False, description='restaurant public identifier'),
         'name': fields.String(required=True, description='restaurant name'),
         'restaurant_type': fields.String(required=True, description='restaurant type'),
         'location': fields.String(required=True, description='restaurant location'),

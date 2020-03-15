@@ -9,6 +9,7 @@ class Restaurant(db.Model):
     __tablename__ = "restaurant"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    public_id = db.Column(db.String(100), unique=True)
     name = db.Column(db.String(155), nullable=False, unique=True)
     restaurant_type = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(255), nullable=False)

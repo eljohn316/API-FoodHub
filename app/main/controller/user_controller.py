@@ -12,7 +12,7 @@ class UserList(Resource):
     @api.doc('list_of_all_users')
     @api.marshal_list_with(_user,envelope='Users')
     def get(self):
-        """ List of all registered users """
+        """ Get all registered users """
         return get_all_users()
     
 @api.route('/register')
@@ -21,7 +21,7 @@ class RegisterUser(Resource):
     @api.doc('create a new user')
     @api.expect(_user, validate=True)
     def post(self):
-        """ Creates a new user | owner """
+        """ User registration """
         data = request.json
         return create_user(data=data)
     

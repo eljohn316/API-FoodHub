@@ -73,5 +73,8 @@ def create(data):
 def get_all_restaurants():
     return Restaurant.query.all()
 
+def get_restaurants_owned(owner_id):
+    return Restaurant.query.filter_by(owner_id=owner_id).all()
+
 def get_a_restaurant(public_id):
     return Restaurant.query.filter_by(public_id=public_id).first()

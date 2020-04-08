@@ -8,6 +8,7 @@ def create_user(data):
             email = data['email'],
             full_name = data['full_name'],
             contact_number = data['contact_number'],
+            gender = data['gender'],
             username = data['username'],
             password = data['password'],
             user_type = data['user_type']
@@ -20,6 +21,30 @@ def create_user(data):
             'message': 'User already exists. Please Log in.',
         }
         return response_object, 409
+
+def update_user(data, user_id):
+    current_user = User.query.filter_by(id=user_id).first()
+    if not current_user:
+        response_object = {
+            'status':'fail',
+            'message':'User not found'
+        }
+        return response_object, 404
+    else:
+        current_user.email = data['email'],
+        current_user.full_name = data['full_name'],
+        current_user.contact_number = data['contact_number'],
+        current_user.gender = data['gender'],
+        current_user.username = data['username'],
+        current_user.password = data['password']
+        db.session.commit()
+
+        response_object = {
+            'status':'success',
+            'message':'User successfully updated'
+        }
+        return response_object, 200
+        
 
 def get_all_users():
     return User.query.all()
@@ -44,3 +69,6 @@ def generate_token(user):
             'message': 'Some error occurred. Please try again.'
         }
         return response_object, 401
+
+def get_current_user(data):
+    return User.query.filter_by(id=data).first()

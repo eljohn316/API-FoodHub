@@ -4,15 +4,18 @@ from flask import Blueprint
 from .main.controller.user_controller import api as user_ns
 from .main.controller.auth_controller import api as auth_ns
 from .main.controller.restaurant_controller import api as rest_ns
+from .main.controller.menu_controller import api as menu_ns
 
 blueprint = Blueprint('api', __name__)
 
 api = Api(blueprint,
-          title='FLASK RESTPLUS API BOILER-PLATE WITH JWT',
+          title='FOODHUB',
           version='1.0',
-          description='a boilerplate for flask restplus web service'
+          description='Foodhub API'
           )
 
 api.add_namespace(user_ns)
 api.add_namespace(auth_ns, path='/auth')
 api.add_namespace(rest_ns, path='/restaurant')
+api.add_namespace(menu_ns, path='/menu')
+

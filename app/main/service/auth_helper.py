@@ -1,13 +1,15 @@
 from app.main import db
 from app.main.model.user import User
 from ..service.blacklist_service import save_token
+from sqlalchemy import or_
 
 class Auth:
     
     @staticmethod
     def login_user(data):
         try:
-            user = User.query.filter_by(email=data.get('email')).first()
+            
+            user = db.session.query(User).filter(or_(User.email==data.get('username_or_email'), User.username==data.get('username_or_email'))).first()
             if user and user.check_password(data.get('password')):
                 auth_token = user.encode_auth_token(user.id)
                 if auth_token:

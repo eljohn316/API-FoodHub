@@ -15,10 +15,11 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     full_name = db.Column(db.String(255), unique=True, nullable=False)
     contact_number = db.Column(db.String(11), unique=True, nullable=False)
+    gender = db.Column(db.String(55))
     user_type = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(50), unique=True)
     password_hash = db.Column(db.String(100))
-    
+
     restaurants = db.relationship('Restaurant', backref='restaurant_owner')
 
     @property

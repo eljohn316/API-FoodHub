@@ -6,6 +6,7 @@ class UserDto:
         'email': fields.String(required=True, description='user email address'),
         'full_name': fields.String(required=True, description='user full name '),
         'contact_number': fields.String(required=True, description='user contact number'),
+        'gender': fields.String(required=True, description='user gender'),
         'username': fields.String(required=True, description='user username'),
         'password': fields.String(required=True, description='user password'),
         'user_type': fields.String(required=True, description='user type')
@@ -14,8 +15,8 @@ class UserDto:
 class AuthDto:
     api = Namespace('auth', description='authentication related operations')
     user_auth = api.model('auth_details', {
-        'email': fields.String(required=True, description='The email address'),
-        'password': fields.String(required=True, description='The user password '),
+        'username_or_email': fields.String(required=True, description='user username or email address'),
+        'password': fields.String(required=True, description='user password '),
     })
 
 
@@ -27,4 +28,14 @@ class RestaurantDto:
         'restaurant_type': fields.String(required=True, description='restaurant type'),
         'location': fields.String(required=True, description='restaurant location'),
         'contact_information': fields.String(required=True, description='restaurant contact information')
+    })
+
+class MenuDto:
+    api = Namespace('menu', description='menu related operations')
+    menu = api.model('menu',{
+        'menu_pic': fields.String(required=True, description='menu profile picture'),
+        'name': fields.String(required=True, description='menu name'),
+        'category': fields.String(required=True, description='menu category'),
+        'price': fields.String(required=True, description='menu price'),
+        'restaurant_id': fields.String(required=True, description='restaurant id')
     })

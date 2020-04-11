@@ -3,7 +3,9 @@ import datetime
 import jwt
 from app.main.model.blacklist import BlacklistToken
 from app.main.model import restaurant
+from app.main.model import reservation
 from ..config import key
+
 
 class User(db.Model):  
     
@@ -21,6 +23,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(100))
 
     restaurants = db.relationship('Restaurant', backref='restaurant_owner')
+    reservee = db.relationship('Reservation', backref='reservation_creator')
 
     @property
     def password(self):

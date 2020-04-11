@@ -39,3 +39,13 @@ class MenuDto:
         'price': fields.String(required=True, description='menu price'),
         'restaurant_id': fields.String(required=True, description='restaurant id')
     })
+
+class ReservationDto:
+    api = Namespace('reservation', description='reservation related operations')
+    reservation = api.model('reservation', {
+        'reservation_code': fields.String(description='reservation code'),
+        'no_of_persons': fields.String(required=True, description='reservation number of persons'),
+        'date': fields.String(required=True, description='reservation date'),
+        'time': fields.String(required=True, description='reservation time'),
+        'reservation_to': fields.String(required=True, description='reservation restaurant')
+    })

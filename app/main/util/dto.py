@@ -1,4 +1,4 @@
-from flask_restplus import Namespace, fields
+from flask_restplus import Namespace, fields 
 
 class UserDto:
     api = Namespace('user', description='user related operations')
@@ -23,7 +23,6 @@ class AuthDto:
 class RestaurantDto:
     api = Namespace('restaurant', description='restaurant related operations')
     restaurant = api.model('restaurant', {
-        'public_id': fields.String(required=False, description='restaurant public identifier'),
         'name': fields.String(required=True, description='restaurant name'),
         'restaurant_type': fields.String(required=True, description='restaurant type'),
         'location': fields.String(required=True, description='restaurant location'),
@@ -43,7 +42,6 @@ class MenuDto:
 class ReservationDto:
     api = Namespace('reservation', description='reservation related operations')
     reservation = api.model('reservation', {
-        'reservation_code': fields.String(description='reservation code'),
         'no_of_persons': fields.String(required=True, description='reservation number of persons'),
         'date': fields.String(required=True, description='reservation date'),
         'time': fields.String(required=True, description='reservation time'),

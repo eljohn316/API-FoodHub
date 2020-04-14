@@ -1,5 +1,6 @@
 from functools import wraps
 from flask import request
+from flask_restplus import marshal_with
 
 from app.main.service.auth_helper import Auth
 
@@ -66,3 +67,25 @@ def customer_required(f):
         
         return f(*args,**kwargs)
     return decorated
+
+def selective_marshal_with(fields_private, name):
+    """
+    Selective response marshalling
+    """
+    def decorated(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            
+            func = marshal_with(fields_private, envelope=name)(f)
+            return func(*args, **kwargs)
+            
+        return wrapper
+    return decorated
+
+            
+            
+                
+            
+
+
+

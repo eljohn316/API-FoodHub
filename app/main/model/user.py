@@ -1,10 +1,13 @@
-from .. import db, flask_bcrypt
 import datetime
 import jwt
+
+from .. import db, flask_bcrypt
+from ..config import key
+
 from app.main.model.blacklist import BlacklistToken
 from app.main.model import restaurant
 from app.main.model import reservation
-from ..config import key
+from app.main.model import reviews
 
 
 class User(db.Model):  
@@ -24,6 +27,7 @@ class User(db.Model):
 
     restaurants = db.relationship('Restaurant', backref='restaurant_owner')
     reservee = db.relationship('Reservation', backref='reservation_creator')
+    restaurant_reviewer = db.relationship('Reviews', backref='review_author')
 
     @property
     def password(self):

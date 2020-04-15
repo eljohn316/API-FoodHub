@@ -47,3 +47,11 @@ class ReservationDto:
         'time': fields.String(required=True, description='reservation time'),
         'reservation_to': fields.String(required=True, description='reservation restaurant')
     })
+
+class ReviewDto:
+    api = Namespace('reviews', description='reviews related operations')
+    reviews = api.model('reviews', {
+        'star_rating':fields.String(required=True, description='review rating'),
+        'comment': fields.String(required=True, description='review comments'),
+        'reviewed_restaurant': fields.String(required=True, description='reviewed restaurant')
+    })

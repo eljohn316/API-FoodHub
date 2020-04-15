@@ -24,3 +24,11 @@ RestaurantDtoPublic = Model('restaurant_public', {
     'contact_information': fields.String(),
     'owner_id':fields.String()
 })
+
+ReviewsDtoPublic = Model('reviews_public', {
+    'star_rating': fields.String(),
+    'date': fields.String(),
+    'comment': fields.String(),
+    'reviewer': fields.String(),
+    'reviewed_restaurant': fields.String()
+})

@@ -1,8 +1,9 @@
 from .. import db
-import datetime
+
 from app.main.model import user
 from app.main.model import menu
 from app.main.model import reservation
+from app.main.model import reviews
 
 class Restaurant(db.Model):
 
@@ -20,6 +21,7 @@ class Restaurant(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     menu = db.relationship('Menu', backref='restaurant_menu')
     reservation = db.relationship('Reservation', backref='reservation')
+    restaurant_reviews = db.relationship('Reviews', backref='reviews')
 
     def __repr__(self):
         return "<Restaurant '{}'>".format(self.name)

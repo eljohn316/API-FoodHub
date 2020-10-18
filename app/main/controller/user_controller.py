@@ -1,50 +1,81 @@
 from flask import request
-from flask_restplus import Resource
+from flask_restx import Resource
 
-from ..util.dto import UserDto
-from ..util.custom_dto import UserDtoPublic
-from ..service.auth_helper import Auth
-from ..service.user_service import create_user, update_user, get_all_users, get_current_user
-from ..util.decorator import token_required, customer_required, owner_required, selective_marshal_with
+from app.main.util.dto import UserDto
+from app.main.util.custom_dto import UserDtoPublic
+from app.main.util.decorator import selective_marshal_with, owner_token_required, customer_token_required
+from app.main.service.user_service import sign_up_customer, sign_up_owner, get_current_user, get_customers, get_owners, update_user, get_user
 
 api = UserDto.api
-_user = UserDto.user
+_create_user = UserDto.create_user
+_update_user = UserDto.update_user
 
-@api.route('/')
-class UserList(Resource):
-    @api.doc('get_all_users')
-    @selective_marshal_with(UserDtoPublic, name='Users')
-    def get(self):
-        """ Get all registered users """
-        return get_all_users()
+@api.route('/owner/')
+class OwnerList(Resource):
+  """ Shows all owners and lets you POST to add new owners. """
+  @api.doc('get_owners')
+  @selective_marshal_with(UserDtoPublic, name='Owners')
+  def get(self):
+    """ Get all owners """
+    return get_owners()
 
-    @api.doc('update_user')
-    @token_required
-    def put(self):
-        """ Update user details """
-        data = request.json
-        user = Auth.get_logged_in_user(request)
-        current_user = user[0]["data"]["user_id"]
-        return update_user(data=data, user_id=current_user)
+  @api.doc('create_owner')
+  @api.expect(_create_user, validate=True)
+  @api.response(201, 'Owner successfully created.')
+  def post(self):
+    """Creates new owner """
+    data = request.json
+    return sign_up_owner(data=data)
 
+@api.route('/customer/')
+class CustomerList(Resource):
+  """ Shows all customers and lets you POST to add new customers. """
+  @api.doc('get_customers')
+  @selective_marshal_with(UserDtoPublic, name="Customers")
+  def get(self):
+    """ Get all customers """
+    return get_customers()
 
-@api.route('/current')
-class CurrentUser(Resource):
-    @api.doc('get_current_user')
-    @token_required
-    @api.marshal_list_with(_user, envelope="Current User")
-    def get(self):
-        """ Get the current user """
-        user = Auth.get_logged_in_user(request)
-        current_user = user[0]["data"]["user_id"]
-        return get_current_user(current_user)
+  @api.doc('create_customer')
+  @api.expect(_create_user, validate=True)
+  @api.response(201, 'Customer successfully created.')
+  def post(self):
+    """ Creates new customer """
+    data = request.json
+    return sign_up_customer(data=data)
 
-@api.route('/register')
-class AddUser(Resource):
-    @api.response(201,'User succesfully created.')
-    @api.doc('create_user')
-    @api.expect(_user, validate=True)
-    def post(self):
-        """ User registration """
-        data = request.json
-        return create_user(data=data)
+@api.route('/customer/<public_id>')
+class Customer(Resource):
+  """ Shows a single customer and lets you update and delete an existing customer."""
+  @api.doc('get_a_customer')
+  @selective_marshal_with(UserDtoPublic, name="Customer")
+  def get(self, public_id):
+    """ Get customer """
+    return get_user(public_id=public_id)
+  
+  @api.doc('update_an_existing_customer')
+  @api.expect(_update_user, validate=True)
+  @api.response(200, 'Successfully updated')
+  @api.response(404, 'Customer not found.')
+  def put(self, public_id):
+    """ Update an existing customer """
+    data = request.json
+    return update_user(data=data, public_id=public_id)
+
+@api.route('/owner/<public_id>')
+class Owner(Resource):
+  """ Shows a single owner and lets you update and delete an existing owner."""
+  @api.doc('get_a_owner')
+  @selective_marshal_with(UserDtoPublic, name="Owner")
+  def get(self, public_id):
+    """ Get owner """
+    return get_user(public_id=public_id)
+
+  @api.doc('update_an_existing_owner')
+  @api.expect(_update_user, validate=True)
+  @api.response(200, 'Successfully updated')
+  @api.response(404, 'User not found.')
+  def put(self, public_id):
+    """ Update an existing owner """
+    data = request.json
+    return update_user(data=data, public_id=public_id)

@@ -1,26 +1,11 @@
-from flask_restplus import Model, fields
+from flask_restx import Model, fields
 
-UserDtoPublic = Model('user_public', {
+UserDtoPublic = Model('user', {
+  'full_name': fields.String(),
+  'contact_number': fields.String(),
+  'account': {
+    'public_id':fields.String(),
     'email': fields.String(),
-    'full_name': fields.String(),
-    'contact_number': fields.String(),
-    'gender': fields.String()    
-})
-
-ReservationDtoPublic = Model('reservation_public', {
-    'reservation_code': fields.String(),
-    'no_of_persons': fields.String(),
-    'date': fields.String(),
-    'time': fields.String(),
-    'reservation_to': fields.String(),
-    'rerservee':fields.String()
-})
-
-RestaurantDtoPublic = Model('restaurant_public', {
-    'public_id': fields.String(),
-    'name': fields.String(),
-    'restaurant_type': fields.String(),
-    'location': fields.String(),
-    'contact_information': fields.String(),
-    'owner_id':fields.String()
+    'registered_on': fields.DateTime(dt_format='rfc822'),
+  }
 })

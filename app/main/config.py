@@ -1,36 +1,32 @@
 import os
 
-class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious_secret_key')
-    DEBUG = False
+basedir = os.path.abspath(os.path.dirname(__file__))
 
+class Config:
+  SECRET_KEY = os.getenv('SECRET_KEY','foodhub_secret_key')
+  DEBUG = False
 
 class DevelopmentConfig(Config):
-    # uncomment the line below to use postgres
-    # SQLALCHEMY_DATABASE_URI = postgres_local_base
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhubapi'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+  DEBUG = True
+  SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhub_db'
+  SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestingConfig(Config):
-    DEBUG = True
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhubapi'
-    PRESERVE_CONTEXT_ON_EXCEPTION = False
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+  DEBUG = True
+  TESTING = True
+  SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhub_db'
+  PRESERVE_CONTEXT_ON_EXCEPTION = False
+  SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class ProductionConfig(Config):
-    DEBUG = False
-    # uncomment the line below to use postgres
-    # SQLALCHEMY_DATABASE_URI = postgres_local_base
-
+  DEBUG = False
+  #uncomment the line to use postgres
+  #SQLALCHEMY_DATABASE_URI = 'postgresql://foodhub:password@localhost/foodhub'
 
 config_by_name = dict(
-    dev=DevelopmentConfig,
-    test=TestingConfig,
-    prod=ProductionConfig
+  dev=DevelopmentConfig,
+  test=TestingConfig,
+  prod=ProductionConfig
 )
 
 key = Config.SECRET_KEY

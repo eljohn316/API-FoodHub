@@ -1,71 +1,72 @@
-from functools import wraps
 from flask import request
-from flask_restplus import marshal_with
+from flask_restx import marshal_with
+from functools import wraps
 
 from app.main.service.auth_helper import Auth
-
-from functools import wraps
-from flask import request
-
-from app.main.service.auth_helper import Auth
-
 
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-
         data, status = Auth.get_logged_in_user(request)
         token = data.get('data')
 
         if not token:
             return data, status
+        
+        return f(*args, **kwargs)
+    return decorated
+
+def owner_token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        data, status = Auth.get_logged_in_user(request)
+        token = data.get('data')
+        
+        print(token)
+
+        if not token:
+            response_object = {
+                'status':'fail',
+                'message':'Missing owner token'
+            }
+            return response_object, 401
+
+        user_type = token.get('user_type')
+        if user_type != 'Owner':
+            response_object = {
+                'status': 'fail',
+                'message': 'Owner token required'
+            }
+            return response_object, 401
 
         return f(*args, **kwargs)
 
     return decorated
 
-
-def owner_required(f):
+def customer_token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        
         data, status = Auth.get_logged_in_user(request)
-        token =  data.get('data')
+        token = data.get('data')
 
         if not token:
-            return data, status
-        
-        owner = token.get('user_type')
-        if owner != "Owner":
             response_object = {
                 'status':'fail',
-                'message': 'Owner token required.'
+                'message':'Missing owner token'
             }
-            return response_object, 401 
-        
-        return f(*args,**kwargs)
-    return decorated
+            return response_object, 401
 
-
-def customer_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        
-        data, status = Auth.get_logged_in_user(request)
-        token =  data.get('data')
-
-        if not token:
-            return data, status
-        
-        owner = token.get('user_type')
-        if owner != "Customer":
+        user_type = token.get('user_type')
+        if user_type != 'Customer':
             response_object = {
-                'status':'fail',
-                'message': 'Customer token required.'
+                'status': 'fail',
+                'message': 'Customer token required'
             }
-            return response_object, 401 
-        
-        return f(*args,**kwargs)
+            return response_object, 401
+
+        return f(*args, **kwargs)
+
     return decorated
 
 def selective_marshal_with(fields_private, name):
@@ -81,11 +82,3 @@ def selective_marshal_with(fields_private, name):
             
         return wrapper
     return decorated
-
-            
-            
-                
-            
-
-
-

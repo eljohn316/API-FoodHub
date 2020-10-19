@@ -8,7 +8,7 @@ class Config:
 
 class DevelopmentConfig(Config):
   DEBUG = True
-  SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhub_db'
+  SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/api'
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestingConfig(Config):

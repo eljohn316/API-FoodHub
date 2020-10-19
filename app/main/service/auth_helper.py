@@ -32,10 +32,8 @@ class Auth:
   
   @staticmethod
   def logout_user(data):
-    print(data)
     if data:
       auth_token = data.split(" ")[0]
-      print(auth_token)
     else:
       auth_token = ''
     
@@ -87,4 +85,24 @@ class Auth:
         'status':'fail',
         'message': 'Please provide a valid token.'
       }
+      return response_object, 401
+  
+  @staticmethod
+  def get_current_id(new_request):
+    auth_token = new_request.headers.get('Authorization')
+    if auth_token:
+      resp = User.decode_auth_token(auth_token)
+      if not isinstance(resp, str):
+        user = User.query.filter_by(id=resp).first()
+        return user.id
+      response_object = {
+        'status':'fail',
+        'message': resp
+      }
+      return response_object, 401
+    else:
+      response_object = {
+        'status':'fail',
+        'message':'Please provide a valid token.'
+      }      
       return response_object, 401

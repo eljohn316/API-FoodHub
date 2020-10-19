@@ -22,20 +22,10 @@ def owner_token_required(f):
 
         data, status = Auth.get_logged_in_user(request)
         token = data.get('data')
-        
-        print(token)
 
-        if not token:
+        if not token or token.get('user_type') != 'Owner':
             response_object = {
                 'status':'fail',
-                'message':'Missing owner token'
-            }
-            return response_object, 401
-
-        user_type = token.get('user_type')
-        if user_type != 'Owner':
-            response_object = {
-                'status': 'fail',
                 'message': 'Owner token required'
             }
             return response_object, 401
@@ -50,17 +40,9 @@ def customer_token_required(f):
         data, status = Auth.get_logged_in_user(request)
         token = data.get('data')
 
-        if not token:
+        if not token or token.get('user_type') != 'Customer':
             response_object = {
                 'status':'fail',
-                'message':'Missing owner token'
-            }
-            return response_object, 401
-
-        user_type = token.get('user_type')
-        if user_type != 'Customer':
-            response_object = {
-                'status': 'fail',
                 'message': 'Customer token required'
             }
             return response_object, 401

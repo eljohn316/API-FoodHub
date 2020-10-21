@@ -24,7 +24,7 @@ class AuthDto:
 
 class RestaurantDto:
   api = Namespace('restaurant', description='restaurant related operations')
-  create_restaurant = api.model('create_restaurant', {
+  restaurant = api.model('restaurant', {
     'restaurant_name' : fields.String(required=True, description='restaurant name'),
     'restaurant_type' : fields.String(required=True, description='restaurant type'),
     'business_hours' : fields.String(required=True, description='restaurant business hours'),

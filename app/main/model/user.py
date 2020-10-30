@@ -12,6 +12,7 @@ class User(db.Model):
   __tablename__ = "user"
 
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  profile_image = db.Column(db.String(155), nullable=True)
   public_id = db.Column(db.String(100), nullable=False, unique=True)
   full_name = db.Column(db.String(155), nullable=False)
   email = db.Column(db.String(50), nullable=False)
@@ -21,6 +22,14 @@ class User(db.Model):
   user_type = db.Column(db.String(20), nullable=False)
 
   restaurants = db.relationship('Restaurant', backref='owner', lazy=True)
+
+  @classmethod
+  def find_by_email(cls, email):
+    return cls.query.filter_by(email=email).first()
+  
+  @classmethod
+  def find_by_public_id(cls, public_id):
+    return cls.query.filter_by(public_id=public_id).first()
 
   @property
   def password(self):
@@ -36,6 +45,11 @@ class User(db.Model):
   def __repr__(self):
     return "<User '{}'>".format(self.full_name)
   
+  @staticmethod
+  def add(data):
+    db.session.add(data)
+    db.session.commit()
+
   @staticmethod
   def encode_auth_token(user_id):
     """

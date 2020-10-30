@@ -86,15 +86,14 @@ class Auth:
         'message': 'Please provide a valid token.'
       }
       return response_object, 401
-  
+
   @staticmethod
-  def get_current_id(new_request):
+  def get_current_user(new_request):
     auth_token = new_request.headers.get('Authorization')
     if auth_token:
       resp = User.decode_auth_token(auth_token)
       if not isinstance(resp, str):
-        user = User.query.filter_by(id=resp).first()
-        return user.id
+        return User.query.filter_by(id=resp).first()
       response_object = {
         'status':'fail',
         'message': resp
@@ -103,6 +102,7 @@ class Auth:
     else:
       response_object = {
         'status':'fail',
-        'message':'Please provide a valid token.'
-      }      
+        'message': 'Please provide a valid token.'
+      }
       return response_object, 401
+  

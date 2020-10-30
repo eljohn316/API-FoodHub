@@ -3,7 +3,7 @@ from flask_restx import Namespace, fields
 class UserDto:
   api = Namespace('user', description='user related operations')
   create_user = api.model('create_user', {
-    'full_name': fields.String(required=True, description='user fullname'),
+    'full_name': fields.String(readonly=True, description='user fullname'),
     'email': fields.String(required=True, description='user email'),
     'password': fields.String(required=True, description='user password'),
     'contact_number': fields.String(required=True, description='user contact number')
@@ -31,4 +31,11 @@ class RestaurantDto:
     'location' : fields.String(required=True, description='restaurant location'),
     'contact_number' : fields.String(required=True, description='restaurant contact number'),
     'telephone_number' : fields.String(required=True, description='restaurant telephone number')
+  })
+
+class MenuDto:
+  api = Namespace('menu', description='menu related operations')
+  menu = api.model('menu', {
+    'menu_name' : fields.String(required=True, description='menu name')
+
   })

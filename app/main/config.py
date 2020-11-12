@@ -8,13 +8,15 @@ class Config:
 
 class DevelopmentConfig(Config):
   DEBUG = True
-  SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/api'
+  SQLALCHEMY_DATABASE_URI = 'postgres://rijaffxxqcprkb:00229ec11c6ddb945032ccdb6a3e80b0e16fc772582b346e651f6d2075b5b496@ec2-54-146-4-66.compute-1.amazonaws.com:5432/dac0g3or5iltdp'
+  # SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/api'
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestingConfig(Config):
   DEBUG = True
   TESTING = True
-  SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhub_db'
+  SQLALCHEMY_DATABASE_URI = 'postgres://rijaffxxqcprkb:00229ec11c6ddb945032ccdb6a3e80b0e16fc772582b346e651f6d2075b5b496@ec2-54-146-4-66.compute-1.amazonaws.com:5432/dac0g3or5iltdp'
+  # SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password@localhost/foodhub_db'
   PRESERVE_CONTEXT_ON_EXCEPTION = False
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 

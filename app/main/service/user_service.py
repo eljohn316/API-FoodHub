@@ -20,7 +20,7 @@ class UserService:
         user_type = str(data['user_type']).capitalize()
       )
       User.add(new_user)
-      return User.generate_token(new_user)
+      return generate_token(new_user)
     else:
       response_object = {
         'status':'fail',
@@ -30,7 +30,7 @@ class UserService:
 
   @staticmethod
   def update(data, public_id):
-    current_user = User.find_by_public_id(public_id=data['public_id'])
+    current_user = User.find_by_public_id(public_id=public_id)
     if not current_user:
       response_object = {
         'status':'fail',

@@ -6,7 +6,8 @@ class UserDto:
     'full_name': fields.String(required=True, description='user fullname'),
     'email': fields.String(required=True, description='user email'),
     'password': fields.String(required=True, description='user password'),
-    'contact_number': fields.String(required=True, description='user contact number')
+    'contact_number': fields.String(required=True, description='user contact number'),
+    'user_type': fields.String(required=True, description='user type')
   })
 
   update_user = api.model('update_user', {

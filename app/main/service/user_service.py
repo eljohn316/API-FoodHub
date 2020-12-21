@@ -5,6 +5,23 @@ from app.main import db
 from app.main.model.user import User
 
 class UserService:
+  
+  @staticmethod
+  def generate_token(user):
+    try:
+      auth_token = user.encode_auth_token(user.id)
+      response_object = {
+        'status':'success',
+        'message':'Successfully registered.',
+        'Authorization': auth_token.decode()
+      }
+      return response_object, 201
+    except Exception as e:
+      response_object = {
+        'status':'fail',
+        'message':'Some error occured. Please try again.'
+      }
+      return response_object, 401
 
   @staticmethod
   def sign_up(data):
@@ -20,7 +37,7 @@ class UserService:
         user_type = str(data['user_type']).capitalize()
       )
       User.add(new_user)
-      return generate_token(new_user)
+      return UserService.generate_token(new_user)
     else:
       response_object = {
         'status':'fail',
@@ -61,21 +78,7 @@ class UserService:
     return User.query.filter_by(user_type='Customer').all()
 
   
-def generate_token(user):
-  try:
-    auth_token = user.encode_auth_token(user.id)
-    response_object = {
-      'status':'success',
-      'message':'Successfully registered.',
-      'Authorization': auth_token.decode()
-    }
-    return response_object, 201
-  except Exception as e:
-    response_object = {
-      'status':'fail',
-      'message':'Some error occured. Please try again.'
-    }
-    return response_object, 401
+
 
 
 

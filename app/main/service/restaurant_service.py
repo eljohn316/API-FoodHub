@@ -67,14 +67,13 @@ class Rest:
         'status':'success',
         'message':'Successfully deleted'
       }
-      return response_object, 204
+      return response_object, 200
     else:
       response_object = {
         'status':'fail',
         'message':'Restaurant not found.'
       }
       return response_object, 404
-      
   
   @staticmethod
   def get_restaurants(owner):

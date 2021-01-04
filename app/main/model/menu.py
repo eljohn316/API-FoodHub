@@ -13,7 +13,3 @@ class Menu(db.Model):
   def __repr__(self):
     return "<Menu '{}'>".format(self.menu_name)
 
-  @staticmethod
-  def create(data):
-    db.session.add(data)
-    db.session.commit()

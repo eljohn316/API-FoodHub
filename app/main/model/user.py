@@ -28,8 +28,8 @@ class User(db.Model):
     return cls.query.filter_by(email=email).first()
   
   @classmethod
-  def find_by_public_id(cls, public_id):
-    return cls.query.filter_by(public_id=public_id).first()
+  def find_by_id(cls, id):
+    return cls.query.filter_by(id=id).first()
 
   @property
   def password(self):

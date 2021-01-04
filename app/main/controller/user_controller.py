@@ -38,42 +38,48 @@ class CustomerList(Resource):
     """ Get all customers """
     return UserService.get_customers()
 
-@api.route('/customer/<public_id>')
+@api.route('/customer/<int:id>')
 class Customer(Resource):
   """ Shows a single customer and lets you update and delete an existing customer."""
   @api.doc('get_a_customer')
   @selective_marshal_with(UserDtoPublic, name="Customer")
-  def get(self, public_id):
+  def get(self, id):
     """ Get customer """
-    return UserService.get_user(public_id=public_id)
+    user = UserService.get_user(id=id)
+    if not user:
+      api.abort(404, 'Customer not found')
+    return UserService.get_user(id=id)
   
   @api.doc('update_an_existing_customer')
   @api.expect(_update_user, validate=True)
   @api.response(200, 'Successfully updated')
   @api.response(404, 'Customer not found.')
-  def put(self, public_id):
+  def put(self, id):
     """ Update an existing customer """
-    user = UserService.get_user(public_id=public_id)
+    user = UserService.get_user(id=id)
     if not user:
       api.abort(404, 'Customer not found')
-    return UserService.update(data=request.json, public_id=public_id)
+    return UserService.update(data=request.json, id=id)
 
-@api.route('/owner/<public_id>')
+@api.route('/owner/<int:id>')
 class Owner(Resource):
   """ Shows a single owner and lets you update and delete an existing owner."""
   @api.doc('get_a_owner')
   @selective_marshal_with(UserDtoPublic, name="Owner")
-  def get(self, public_id):
+  def get(self, id):
     """ Get owner """
-    return UserService.get_user(public_id=public_id)
+    user = UserService.get_user(id=id)
+    if not user:
+      api.abort(404, 'Owner not found')
+    return UserService.get_user(id=id)
 
   @api.doc('update_an_existing_owner')
   @api.expect(_update_user, validate=True)
   @api.response(200, 'Successfully updated')
   @api.response(404, 'User not found.')
-  def put(self, public_id):
+  def put(self, id):
     """ Update an existing owner """
-    user = UserService.get_user(public_id=public_id)
+    user = UserService.get_user(id=id)
     if not user:
       api.abort(404, 'Owner not found')
-    return UserService.update(data=request.json, public_id=public_id)
+    return UserService.update(data=request.json, id=id)

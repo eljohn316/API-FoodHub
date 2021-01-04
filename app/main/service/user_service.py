@@ -46,8 +46,8 @@ class UserService:
       return response_object, 409
 
   @staticmethod
-  def update(data, public_id):
-    current_user = User.find_by_public_id(public_id=public_id)
+  def update(data, id):
+    current_user = User.find_by_id(id=id)
     if not current_user:
       response_object = {
         'status':'fail',
@@ -66,8 +66,8 @@ class UserService:
       return response_object, 200
 
   @staticmethod
-  def get_user(public_id):
-    return User.find_by_public_id(public_id=public_id)
+  def get_user(id):
+    return User.find_by_id(id=id)
 
   @staticmethod
   def get_owners():

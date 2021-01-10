@@ -35,8 +35,8 @@ class Rest:
       return response_object, 409
 
   @staticmethod
-  def update(data, public_id):
-    restaurant = Restaurant.query.filter_by(public_id=public_id).first()
+  def update(data, id):
+    restaurant = Restaurant.query.filter_by(id=id).first()
     if not restaurant:
       response_object = {
         'status':'fail',
@@ -59,8 +59,8 @@ class Rest:
       return response_object, 200
   
   @staticmethod
-  def delete(data, public_id):
-    restaurant = Restaurant.query.filter_by(public_id=public_id).first()
+  def delete(data, id):
+    restaurant = Restaurant.query.filter_by(id=id).first()
     if restaurant:
       Restaurant.delete(restaurant)
       response_object = {
@@ -80,8 +80,8 @@ class Rest:
     return Restaurant.query.filter(Restaurant.owner==owner).all()
 
   @staticmethod
-  def get_a_restaurant(public_id):
-    return Restaurant.query.filter(Restaurant.public_id==public_id).first()
+  def get_a_restaurant(id):
+    return Restaurant.query.filter(Restaurant.id==id).first()
   
   @staticmethod
   def get_all_restaurants():

@@ -2,7 +2,6 @@ import datetime
 
 from app.main import db
 from app.main.model import user
-from app.main.model.menu import Menu
 
 class Restaurant(db.Model):
   """ Restaurant model for storing restaurant related details """
@@ -32,6 +31,27 @@ class Restaurant(db.Model):
     db.session.add(data)
     db.session.commit()
 
+  @staticmethod
+  def delete(data):
+    db.session.delete(data)
+    db.session.commit()
+
+class Menu(db.Model):
+  """ Menu model for storing menu related details """
+
+  __tablename__ = "menu"
+
+  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+  restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'))  
+
+  def __repr__(self):
+    return "<Menu '{}'>".format(self.id)
+
+  @staticmethod
+  def create(data):
+    db.session.add(data)
+    db.session.commit()
+  
   @staticmethod
   def delete(data):
     db.session.delete(data)

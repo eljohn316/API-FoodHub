@@ -1,12 +1,11 @@
 from app.main import db
-from app.main.model.restaurant import Restaurant
-from app.main.model.menu import Menu
+from app.main.model.restaurant import Restaurant, Menu
 
 class MenuService:
 
   @staticmethod
-  def create(data, public_id):
-    restaurant = Restaurant.query.filter(Restaurant.public_id==public_id).first()
+  def create(data, restaurant_id):
+    restaurant = Restaurant.query.filter(Restaurant.id==restaurant_id).first()
     if not restaurant:
       response_object = {
         'status':'fail',
@@ -14,7 +13,7 @@ class MenuService:
       }
       return response_object, 404
     else:
-      menu = Menu(restaurant=restaurant)
+      menu = Menu(restaurant_id=data['restaurant_id'])
       Menu.create(menu)
       response_object = {
         'status':'success',
@@ -24,5 +23,5 @@ class MenuService:
 
   @staticmethod
   def get(public_id):
-    restaurant = Restaurant.query.filter_by(public_id=public_id).first()
+    restaurant = Restaurant.query.filter_by(id=id).first()
     return Menu.query.filter_by(restaurant_id=restaurant.id).all()

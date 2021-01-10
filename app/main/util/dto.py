@@ -37,6 +37,6 @@ class RestaurantDto:
 class MenuDto:
   api = Namespace('menu', description='menu related operations')
   menu = api.model('menu', {
-    'menu_name' : fields.String(required=True, description='menu name')
+    'restaurant_id' : fields.Integer(required=True, description='restaurant id')
 
   })

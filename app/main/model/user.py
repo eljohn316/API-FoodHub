@@ -12,7 +12,7 @@ class User(db.Model):
   __tablename__ = "user"
 
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  profile_image = db.Column(db.String(155), nullable=True, default="default")
+  profile_image = db.Column(db.String(155), nullable=True)
   public_id = db.Column(db.String(100), nullable=False, unique=True)
   full_name = db.Column(db.String(155), nullable=False)
   email = db.Column(db.String(50), nullable=False)
@@ -21,7 +21,7 @@ class User(db.Model):
   registered_on = db.Column(db.DateTime, nullable=False)
   user_type = db.Column(db.String(20), nullable=False)
 
-  restaurants = db.relationship('Restaurant', backref='owner', lazy=True)
+  restaurants = db.relationship('Restaurant', backref='owner', lazy="joined", cascade="all, delete")
 
   @classmethod
   def find_by_email(cls, email):

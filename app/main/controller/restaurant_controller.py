@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, abort
 from flask_restx import Resource
 
 from app.main.util.dto import RestaurantDto
@@ -16,12 +16,17 @@ class RestaurantList(Resource):
   Shows all restaurants
   """
   @api.doc('get_restaurants')
+  @api.response(404, "No restaurants found.")
   @selective_marshal_with(RestaurantDtoPublic, name="Restaurants")
   def get(self):
     """
     Get all restaurants
     """
-    return Rest.get_all_restaurants()
+    
+    restaurants = Rest.get_all_restaurants()
+    if restaurants:
+      return restaurants
+    abort(404, "No restaurants found.")
 
 @api.route('/<int:restaurant_id>')
 class Restaurant(Resource):
@@ -29,18 +34,17 @@ class Restaurant(Resource):
   Show one restaurant
   """
   @api.doc('get_restaurant')
+  @api.response(404, 'Restaurant not found')
   @selective_marshal_with(RestaurantDtoPublic, name="Restaurant")
   def get(self, restaurant_id):
     """
     Get one restaurant
     """
-    restaurant = Rest.get_a_restaurant(id=restaurant_id)
-    if not restaurant:
-      api.abort(404, 'Restaurant not found.')
-    return restaurant
-
-
-
+    restaurant = Rest.get_a_restaurant(restaurant_id=restaurant_id)
+    if restaurant:
+      return restaurant
+    abort(404, "No restaurant found.")
+    
 @api.route('/owner/')
 class RestaurantOwner(Resource):
   """
@@ -58,14 +62,19 @@ class RestaurantOwner(Resource):
     return Rest.add(data=request.json, owner=Auth.get_current_user(request))
 
   @owner_token_required
+  @api.response(404, "No restaurants found.")
   @selective_marshal_with(RestaurantDtoPublic, name="Restaurants")
   def get(self):
     """
     Get all owner's restaurants
     """
-    return Rest.get_restaurants(owner=Auth.get_current_user(request))
+    restaurants = Rest.get_restaurants(owner=Auth.get_current_user(request))
+    if restaurants:
+      return restaurants
+    abort(404, "No restaurants found.")
 
 @api.route('/owner/<int:restaurant_id>')
+@api.response(404, 'Restaurant not found')
 @api.param('restaurant_id','Restaurant id')
 class RestaurantOwnerList(Resource):
   """
@@ -74,24 +83,22 @@ class RestaurantOwnerList(Resource):
   @owner_token_required
   @api.expect(_restaurant, validate=True)
   @api.response(200, 'Successfully updated!')
-  @api.response(404, 'Restaurant not found')
   def put(self, restaurant_id):
     """
     Update an existing restaurant
     """
-    restaurant = Rest.get_a_restaurant(id=restaurant_id)
+    restaurant = Rest.get_a_restaurant(restaurant_id=restaurant_id)
     if not restaurant:
       api.abort(404, "Restaurant {} not found.".format(restaurant_id))
     return Rest.update(data=request.json, id=restaurant_id)
   
   @owner_token_required
   @api.response(204, "Successfully deleted")
-  @api.response(404, "Restaurant not found")
   def delete(self, restaurant_id):
     """
     Delete a restaurant
     """
-    restaurant = Rest.get_a_restaurant(id=restaurant_id)
+    restaurant = Rest.get_a_restaurant(restaurant_id=restaurant_id)
     if not restaurant:
       api.abort(404, "Restaurant {} not found.".format(restaurant_id))
     return Rest.delete(data=request.json, id=restaurant_id)

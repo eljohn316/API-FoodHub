@@ -3,6 +3,7 @@ import datetime
 
 from app.main import db
 from app.main.model.restaurant import Restaurant
+from app.main.model.user import User
 
 class Rest:
 
@@ -77,12 +78,141 @@ class Rest:
   
   @staticmethod
   def get_restaurants(owner):
-    return Restaurant.query.filter(Restaurant.owner==owner).all()
+    restaurants = [
+      dict(
+        restaurant_id = restaurant_info[0],
+        public_id = restaurant_info[1],
+        restaurant_image = restaurant_info[2],
+        restaurant_name = restaurant_info[3],
+        restaurant_type = restaurant_info[4],
+        business_hours = restaurant_info[5],
+        location = restaurant_info[6],
+        contact_number = restaurant_info[7],
+        telephone_number = restaurant_info[8],
+        date_created = restaurant_info[9],
+        owner_id = restaurant_info[10],
+        profile_image = restaurant_info[11],
+        full_name = restaurant_info[12],
+        email = restaurant_info[13],
+        password_hash = restaurant_info[14],
+        owner_contact_number = restaurant_info[15],
+        registered_on = restaurant_info[16],
+        user_type = restaurant_info[17]
+      ) for restaurant_info in db.session.query(
+          Restaurant.id,
+          Restaurant.public_id,
+          Restaurant.restaurant_image,
+          Restaurant.restaurant_name,
+          Restaurant.restaurant_type,
+          Restaurant.business_hours,
+          Restaurant.location,
+          Restaurant.contact_number,
+          Restaurant.telephone_number,
+          Restaurant.date_created,
+          User.id,
+          User.profile_image,
+          User.full_name,
+          User.email,
+          User.password_hash,
+          User.contact_number,
+          User.registered_on,
+          User.user_type
+      ).filter_by(
+        owner=owner
+      ).join(
+        User
+      ).all()
+    ]
+    return restaurants
 
   @staticmethod
-  def get_a_restaurant(id):
-    return Restaurant.query.filter(Restaurant.id==id).first()
-  
+  def get_a_restaurant(restaurant_id):
+    restaurant = Restaurant.query.filter_by(id=restaurant_id).first_or_404('Restaurant not found.')
+    restaurant_info = db.session.query(
+      Restaurant.id,
+      Restaurant.public_id,
+      Restaurant.restaurant_image,
+      Restaurant.restaurant_name,
+      Restaurant.restaurant_type,
+      Restaurant.business_hours,
+      Restaurant.location,
+      Restaurant.contact_number,
+      Restaurant.telephone_number,
+      Restaurant.date_created,
+      User.id,
+      User.profile_image,
+      User.full_name,
+      User.email,
+      User.password_hash,
+      User.contact_number,
+      User.registered_on,
+      User.user_type
+    ).filter(Restaurant.id == restaurant_id).join(User).first()
+    
+    return dict(
+      restaurant_id = restaurant_info[0],
+      public_id = restaurant_info[1],
+      restaurant_image = restaurant_info[2],
+      restaurant_name = restaurant_info[3],
+      restaurant_type = restaurant_info[4],
+      business_hours = restaurant_info[5],
+      location = restaurant_info[6],
+      contact_number = restaurant_info[7],
+      telephone_number = restaurant_info[8],
+      date_created = restaurant_info[9],
+      owner_id = restaurant_info[10],
+      profile_image = restaurant_info[11],
+      full_name = restaurant_info[12],
+      email = restaurant_info[13],
+      password_hash = restaurant_info[14],
+      owner_contact_number = restaurant_info[15],
+      registered_on = restaurant_info[16],
+      user_type = restaurant_info[17]
+    )
+      
   @staticmethod
   def get_all_restaurants():
-    return Restaurant.query.all()
+    restaurants = [
+      dict(
+        restaurant_id = restaurant_info[0],
+        public_id = restaurant_info[1],
+        restaurant_image = restaurant_info[2],
+        restaurant_name = restaurant_info[3],
+        restaurant_type = restaurant_info[4],
+        business_hours = restaurant_info[5],
+        location = restaurant_info[6],
+        contact_number = restaurant_info[7],
+        telephone_number = restaurant_info[8],
+        date_created = restaurant_info[9],
+        owner_id = restaurant_info[10],
+        profile_image = restaurant_info[11],
+        full_name = restaurant_info[12],
+        email = restaurant_info[13],
+        password_hash = restaurant_info[14],
+        owner_contact_number = restaurant_info[15],
+        registered_on = restaurant_info[16],
+        user_type = restaurant_info[17]
+      ) for restaurant_info in db.session.query(
+          Restaurant.id,
+          Restaurant.public_id,
+          Restaurant.restaurant_image,
+          Restaurant.restaurant_name,
+          Restaurant.restaurant_type,
+          Restaurant.business_hours,
+          Restaurant.location,
+          Restaurant.contact_number,
+          Restaurant.telephone_number,
+          Restaurant.date_created,
+          User.id,
+          User.profile_image,
+          User.full_name,
+          User.email,
+          User.password_hash,
+          User.contact_number,
+          User.registered_on,
+          User.user_type
+      ).filter(
+        Restaurant.owner_id == User.id
+      ).all()
+    ]
+    return restaurants

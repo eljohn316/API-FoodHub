@@ -2,6 +2,7 @@ from flask import request
 from flask_restx import Resource
 
 from app.main.service.menu_service import MenuService
+from app.main.service.item_service import ItemService
 from app.main.util.decorator import owner_token_required
 from app.main.util.dto import MenuDto
 from app.main.util.custom_dto import MenuDtoPublic
@@ -50,4 +51,4 @@ class MenuItem(Resource):
     """
     Add item
     """
-    return MenuService.add_item(data=request.json, menu_id=menu_id)
+    return ItemService.add_item(data=request.json, menu_id=menu_id)

@@ -1,19 +1,35 @@
 from flask_restx import Namespace, fields
 
-class UserDto:
-  api = Namespace('user', description='user related operations')
-  create_user = api.model('create_user', {
-    'full_name': fields.String(required=True, description='user fullname'),
-    'email': fields.String(required=True, description='user email'),
-    'password': fields.String(required=True, description='user password'),
-    'contact_number': fields.String(required=True, description='user contact number'),
-    'user_type': fields.String(required=True, description='user type')
+class OwnerDto:
+  api = Namespace('owner', description='owner related operations')
+  create_owner = api.model('create_owner', {
+    'full_name': fields.String(required=True, description='owner fullname'),
+    'email': fields.String(required=True, description='owner email'),
+    'password': fields.String(required=True, description='owner password'),
+    'contact_number': fields.String(required=True, description='owner contact number'),
+    'user_type': fields.String(readonly=True, default="Owner", description='owner type')
   })
 
-  update_user = api.model('update_user', {
-    'full_name': fields.String(required=True, description='user fullname'),
-    'email': fields.String(required=True, description='user email'),
-    'contact_number': fields.String(required=True, description='user contact number')
+  update_owner = api.model('update_owner', {
+    'full_name': fields.String(required=True, description='owner fullname'),
+    'email': fields.String(required=True, description='owner email'),
+    'contact_number': fields.String(required=True, description='owner contact number')
+  })
+
+class CustomerDto:
+  api = Namespace('customer', description='customer related operations')
+  create_customer = api.model('create_customer', {
+    'full_name': fields.String(required=True, description='customer fullname'),
+    'email': fields.String(required=True, description='customer email'),
+    'password': fields.String(required=True, description='customer password'),
+    'contact_number': fields.String(required=True, description='customer contact number'),
+    'user_type': fields.String(readonly=True, description='customer type')
+  })
+
+  update_customer = api.model('update_customer', {
+    'full_name': fields.String(required=True, description='customer fullname'),
+    'email': fields.String(required=True, description='customer email'),
+    'contact_number': fields.String(required=True, description='customer contact number')
   })
 
 class AuthDto:
@@ -38,5 +54,10 @@ class MenuDto:
   api = Namespace('menu', description='menu related operations')
   menu = api.model('menu', {
     'restaurant_id' : fields.Integer(required=True, description='restaurant id')
+  })
 
+  item = api.model('item', {
+    'item_name' : fields.String(required=True, description='item name'),
+    'item_availability' : fields.Boolean(default=False, description='item availability'), 
+    'price' : fields.String(required=True, description='item price')
   })

@@ -12,7 +12,7 @@ class User(db.Model):
   __tablename__ = "user"
 
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  profile_image = db.Column(db.String(155), nullable=True)
+  profile_image = db.Column(db.String(155), nullable=True, default="default")
   public_id = db.Column(db.String(100), nullable=False, unique=True)
   full_name = db.Column(db.String(155), nullable=False)
   email = db.Column(db.String(50), nullable=False)

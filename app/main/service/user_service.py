@@ -24,7 +24,7 @@ class UserService:
       return response_object, 401
 
   @staticmethod
-  def sign_up(data):
+  def sign_up_owner(data):
     user = User.find_by_email(email=data['email'])
     if not user:
       new_user = User(
@@ -34,14 +34,36 @@ class UserService:
         password = data['password'],
         contact_number = data['contact_number'],
         registered_on = datetime.datetime.utcnow(),
-        user_type = str(data['user_type']).capitalize()
+        user_type = "Owner"
       )
       User.add(new_user)
       return UserService.generate_token(new_user)
     else:
       response_object = {
         'status':'fail',
-        'message':'User already exists. Please login.'
+        'message':'Owner already exists. Please login.'
+      }
+      return response_object, 409
+  
+  @staticmethod
+  def sign_up_customer(data):
+    user = User.find_by_email(email=data['email'])
+    if not user:
+      new_user = User(
+        public_id = str(uuid.uuid4())[:8],
+        full_name = data['full_name'],
+        email = data['email'],
+        password = data['password'],
+        contact_number = data['contact_number'],
+        registered_on = datetime.datetime.utcnow(),
+        user_type = "Customer"
+      )
+      User.add(new_user)
+      return UserService.generate_token(new_user)
+    else:
+      response_object = {
+        'status':'fail',
+        'message':'Customer already exists. Please login.'
       }
       return response_object, 409
 

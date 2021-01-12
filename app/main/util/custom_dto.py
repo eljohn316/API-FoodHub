@@ -14,8 +14,8 @@ UserDtoPublic = Model('user', {
 RestaurantDtoPublic = Model('restaurant', {
   'id' : fields.String(),
   'public_id' : fields.String(),
+  'restaurant_name' : fields.String(),
   'restaurant_details' : {
-    'restaurant_name' : fields.String(),
     'restaurant_type' : fields.String(),
     'business_hours' : fields.String(),
     'location' : fields.String(),
@@ -26,4 +26,8 @@ RestaurantDtoPublic = Model('restaurant', {
       'owner_id' : fields.String()
     }
   }
+})
+
+MenuDtoPublic = Model('menu', {
+  'id' : fields.Integer()
 })

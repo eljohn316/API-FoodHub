@@ -35,5 +35,9 @@ RestaurantDtoPublic = Model('restaurant', {
 })
 
 MenuDtoPublic = Model('menu', {
-  'id' : fields.Integer()
+  'id' : fields.Integer(),
+  'item_name' : fields.String(),
+  'is_sold_out' : fields.Boolean(),
+  'price' : fields.Float(),
+  'image_url' : fields.String()
 })

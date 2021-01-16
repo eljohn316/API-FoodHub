@@ -1,8 +1,8 @@
-"""initial db migration
+"""initial database migration
 
-Revision ID: 7cfc9b6b0bbb
+Revision ID: 4cc364993009
 Revises: 
-Create Date: 2021-01-11 10:19:10.660067
+Create Date: 2021-01-16 13:06:48.227672
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7cfc9b6b0bbb'
+revision = '4cc364993009'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -57,16 +57,15 @@ def upgrade():
     )
     op.create_table('menu',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('restaurant_id', sa.Integer(), nullable=True),
+    sa.Column('restaurant_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['restaurant_id'], ['restaurant.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('restaurant_id')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('item',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('item_name', sa.String(length=100), nullable=False),
-    sa.Column('item_availability', sa.Boolean(), nullable=True),
-    sa.Column('price', sa.String(length=55), nullable=False),
+    sa.Column('is_sold_out', sa.Boolean(), nullable=True),
+    sa.Column('price', sa.Float(), nullable=False),
     sa.Column('image_url', sa.String(length=100), nullable=True),
     sa.Column('menu_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['menu_id'], ['menu.id'], ),

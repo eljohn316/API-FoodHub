@@ -8,8 +8,7 @@ class Menu(db.Model):
   __tablename__ = "menu"
 
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), unique=True)
-
+  restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
   items = db.relationship('Item', backref='menu', lazy="joined", cascade="all, delete")
 
   def __repr__(self):

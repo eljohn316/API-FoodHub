@@ -1,7 +1,7 @@
 from app.main import db
 from app.main.model.restaurant import Restaurant
 from app.main.model.menu import Menu
-
+from app.main.model.item import Item
 
 class MenuService:
 
@@ -15,7 +15,7 @@ class MenuService:
       }
       return response_object, 404
     else:
-      menu = Menu(restaurant_id=data['restaurant_id'])
+      menu = Menu(restaurant_id=restaurant.id)
       Menu.create(menu)
       response_object = {
         'status':'success',
@@ -24,5 +24,6 @@ class MenuService:
       return response_object, 201
 
   @staticmethod
-  def get(menu_id):
-    pass
+  def get_menu(menu_id):
+    return Item.query.filter(Item.menu_id == menu_id).all()
+    

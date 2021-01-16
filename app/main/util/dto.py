@@ -59,7 +59,9 @@ class MenuDto:
 class ItemDto:
   api = Namespace('item', description="item related operations")
   item = api.model('item', {
+    'id' : fields.Integer(readonly=True, description='item id'),
     'item_name' : fields.String(required=True, description='item name'),
     'is_sold_out' : fields.Boolean(default=False, description='item availability'), 
-    'price' : fields.Float(required=True, min=0, description='item price')
+    'price' : fields.Float(required=True, min=0, description='item price'),
+    'image_url' : fields.String(readonly=True, description="item image")
   })

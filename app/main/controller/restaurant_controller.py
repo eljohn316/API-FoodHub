@@ -82,7 +82,7 @@ class RestaurantOwnerList(Resource):
   """
   @owner_token_required
   @api.expect(_restaurant, validate=True)
-  @api.response(200, 'Successfully updated!')
+  @api.response(200, 'Successfully updated')
   def put(self, restaurant_id):
     """
     Update an existing restaurant

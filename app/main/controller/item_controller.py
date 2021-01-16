@@ -24,19 +24,20 @@ class Item(Resource):
     return ItemService.add_item(data=request.json, menu_id=menu_id)
 
 @api.route('/<int:item_id>')
+@api.response(404, 'Item not found')
 @api.param('item_id', 'Item id')
 class ItemList(Resource):
   """
-  Update and delete an item
+  Get, Update and Delete an existing item.
   """
-  @api.response(200, 'Item succesfully updated')
-  # @api.expect(_item, validate=True)
-  def put(self, item_id):
+  @api.marshal_with(_item, envelope="Item")
+  def get(self, item_id):
     """
-    Update an existing item.
+    Get an item
     """
     item = ItemService.get_item(item_id=item_id)
     if not item:
-      api.abort("Item {} not found.".format(item_id))
-    return ItemService.update_item(data=request.json, item_id=item_id)
+      api.abort(404, "Item {} not found.".format(item_id))
+    return item
 
+  

@@ -23,7 +23,7 @@ class Item(Resource):
     """
     return ItemService.add_item(data=request.json, menu_id=menu_id)
 
-@api.route('/<int:item_id>')
+@api.route('/owner/<int:item_id>')
 @api.response(404, 'Item not found')
 @api.param('item_id', 'Item id')
 class ItemList(Resource):
@@ -40,4 +40,16 @@ class ItemList(Resource):
       api.abort(404, "Item {} not found.".format(item_id))
     return item
 
+  
+  @api.expect(_item, validate=True)
+  @api.response(200, "Successfully updated")
+  def put(self, item_id):
+    """
+    Update an existing item
+    """
+    data = request.json
+    item = ItemService.get_item(item_id=item_id)
+    if not item:
+      api.abort(404, "Item {} not found".format(item_id))
+    return ItemService.update_item(data=data, item_id=item_id)
   

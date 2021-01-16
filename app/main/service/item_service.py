@@ -16,7 +16,6 @@ class ItemService:
     else:
       item = Item(
         item_name = data['item_name'],
-        is_sold_out = data['is_sold_out'],
         price = data['price'],
         menu_id = menu.id
       )
@@ -39,9 +38,9 @@ class ItemService:
       return response_object, 404
     else:
       item.item_name = data['item_name'],
-      item.is_sold_out = data['is_sold_out'],
       item.price = data['price']
       db.session.commit()
+
       response_object = {
         'status':'success',
         'message':'Item successfully updated'

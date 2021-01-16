@@ -48,5 +48,23 @@ class ItemService:
       return response_object, 200
 
   @staticmethod
+  def delete_item(item_id):
+    item = Item.query.filter_by(id=item_id).first()
+    if not item:
+      response_object = {
+        'status' : 'fail',
+        'message' : 'Item not found'
+      }
+      return response_object, 404
+    else:
+      db.session.delete(item)
+      db.session.commit()
+      response_object = {
+        'status' : 'success',
+        'message' : 'Item successfully deleted'
+      }
+      return response_object, 200
+
+  @staticmethod
   def get_item(item_id):
     return Item.query.filter_by(id=item_id).first()

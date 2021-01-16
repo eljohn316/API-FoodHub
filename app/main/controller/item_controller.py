@@ -47,9 +47,17 @@ class ItemList(Resource):
     """
     Update an existing item
     """
-    data = request.json
     item = ItemService.get_item(item_id=item_id)
     if not item:
       api.abort(404, "Item {} not found".format(item_id))
-    return ItemService.update_item(data=data, item_id=item_id)
+    return ItemService.update_item(data=request.json, item_id=item_id)
   
+  @api.response(204, "Item successfully deleted")
+  def delete(self, item_id):
+    """
+    Delete an item
+    """
+    item = ItemService.get_item(item_id=item_id)
+    if not item:
+      api.abort(404, "Item {} not found".format(item_id))
+    return ItemService.delete_item(item_id=item_id)

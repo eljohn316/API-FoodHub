@@ -1,37 +1,29 @@
-import datetime
-
 from app.main import db
 from app.main.model import user
 
 class Restaurant(db.Model):
-  """ Restaurant model for storing restaurant related details """
 
-  __tablename__ = "restaurant"
+    """
+    Restaurant model for storing restaurant related details
+    """
 
-  id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  public_id = db.Column(db.String(20), nullable=False, unique=True)
-  restaurant_image = db.Column(db.String(155), nullable=True)
-  restaurant_name = db.Column(db.String(100), nullable=False, unique=True)
-  restaurant_type = db.Column(db.String(100), nullable=False)
-  business_hours = db.Column(db.String(100), nullable=False)
-  location = db.Column(db.String(155), nullable=False)
-  contact_number = db.Column(db.String(20), nullable=False)
-  telephone_number = db.Column(db.String(20), nullable=False)
-  date_created = db.Column(db.DateTime, nullable=False)
+    __tablename__ = 'restaurants'
 
-  owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    id =  db.Column(db.Integer, primary_key=True)
+    restaurant_image = db.Column(db.String(255), nullable=True)
+    restaurant_name = db.Column(db.String(100), nullable=False, unique=True)
+    restaurant_type = db.Column(db.String(75), nullable=False)
+    location = db.Column(db.String(155), nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False)
+    business_hours = db.Column(db.String(155), nullable=False)
+    no_of_vacancies = db.Column(db.Integer)
+    contact_number = db.Column(db.String(11), nullable=False)
+    telephone_number = db.Column(db.String(8), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-  menu = db.relationship('Menu', backref='restaurant', uselist=False)
-
-  def __repr__(self):
-    return "<User '{}'>".format(self.restaurant_name)
-  
-  @staticmethod
-  def add(data):
-    db.session.add(data)
-    db.session.commit()
-
-  @staticmethod
-  def delete(data):
-    db.session.delete(data)
-    db.session.commit()
+    def __repr__(self):
+        return "<Restaurant '{}'>".format(self.restaurant_name)
+    
+    def add(self):
+        db.session.add(self)
+        db.session.commit()

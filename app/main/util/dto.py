@@ -1,66 +1,80 @@
-from flask_restx import Namespace, fields
+from flask_restx import Model, Namespace, fields
 
-class OwnerDto:
-  api = Namespace('owner', description='owner related operations')
-  create_owner = api.model('create_owner', {
-    'full_name': fields.String(required=True, description='owner fullname'),
-    'email': fields.String(required=True, description='owner email'),
-    'password': fields.String(required=True, description='owner password'),
-    'contact_number': fields.String(required=True, description='owner contact number'),
-    'user_type': fields.String(readonly=True, default="Owner", description='owner type')
-  })
+class UserDto:
+    api = Namespace('user', description='user related operations')
+    user = api.model('user', {
+        'id' : fields.String(description='user id'),
+        'email' : fields.String(description='user email'),
+        'first_name' : fields.String(description='user first name'),
+        'last_name' : fields.String(description='user last name'),
+        'contact_number' : fields.String(description='user contact number'),
+        'user_role' : fields.String(description='user role'),
+        'date_joined' : fields.String(description='user join date')
+    })
 
-  update_owner = api.model('update_owner', {
-    'full_name': fields.String(required=True, description='owner fullname'),
-    'email': fields.String(required=True, description='owner email'),
-    'contact_number': fields.String(required=True, description='owner contact number')
-  })
+    user_create = api.model('create_user', {
+        'email' : fields.String(required=True, description='user email'),
+        'first_name' : fields.String(required=True, description='user first name'),
+        'last_name' : fields.String(required=True, description='user last name'),
+        'password' : fields.String(required=True, description='user password'),
+        'contact_number' : fields.String(required=True, description='user contact number'),
+        'user_role' : fields.String(required=True, description='user role')
+    })
 
-class CustomerDto:
-  api = Namespace('customer', description='customer related operations')
-  create_customer = api.model('create_customer', {
-    'full_name': fields.String(required=True, description='customer fullname'),
-    'email': fields.String(required=True, description='customer email'),
-    'password': fields.String(required=True, description='customer password'),
-    'contact_number': fields.String(required=True, description='customer contact number'),
-    'user_type': fields.String(readonly=True, description='customer type')
-  })
-
-  update_customer = api.model('update_customer', {
-    'full_name': fields.String(required=True, description='customer fullname'),
-    'email': fields.String(required=True, description='customer email'),
-    'contact_number': fields.String(required=True, description='customer contact number')
-  })
+    user_update = api.model('update_user', {
+        'email' : fields.String(description='user email'),
+        'first_name' : fields.String(description='user first name'),
+        'last_name' : fields.String(description='user last name'),
+        'contact_number' : fields.String(description='user contact number')
+    })
 
 class AuthDto:
-  api = Namespace('auth', description='authentication related operations')
-  user_auth = api.model('auth_details', {
-    'email': fields.String(required=True, description='email address'),
-    'password': fields.String(required=True, description='user password '),
-  })
+    api = Namespace('auth', description='authentication related operations')
+    user_auth = api.model('auth_details', {
+        'email': fields.String(required=True, description='user email '),
+        'password': fields.String(required=True, description='user password '),
+    })
 
 class RestaurantDto:
-  api = Namespace('restaurant', description='restaurant related operations')
-  restaurant = api.model('restaurant', {
-    'restaurant_name' : fields.String(required=True, description='restaurant name'),
-    'restaurant_type' : fields.String(required=True, description='restaurant type'),
-    'business_hours' : fields.String(required=True, description='restaurant business hours'),
-    'location' : fields.String(required=True, description='restaurant location'),
-    'contact_number' : fields.String(required=True, description='restaurant contact number'),
-    'telephone_number' : fields.String(required=True, description='restaurant telephone number')
-  })
+    api = Namespace('restaurant', description='restaurant related operations')
+    create_restaurant = api.model('create_restaurant', {
+        'restaurant_name' : fields.String(required=True, description='restaurant name'),
+        'restaurant_type' : fields.String(required=True, description='restaurant type'),
+        'location' : fields.String(required=True, description='restaurant location'),
+        'business_hours' : fields.String(required=True, description='business hours'),
+        'no_of_vacancies' : fields.Integer(required=True, description='number of vacancies'),
+        'contact_number' : fields.String(required=True, description='contact number'),
+        'telephone_number' : fields.String(required=True, description='telephone number'),
+        'owner_id' : fields.Integer(required=True, description='owner id')
+    })
 
-class MenuDto:
-  api = Namespace('menu', description='menu related operations')
-  menu = api.model('menu', {
-    'restaurant_id' : fields.Integer(required=True, description='restaurant id')
-  })
+    update_restaurant = api.model('update_restaurant', {
+        'restaurant_name' : fields.String(required=True, description='restaurant name'),
+        'restaurant_type' : fields.String(required=True, description='restaurant type'),
+        'location' : fields.String(required=True, description='restaurant location'),
+        'business_hours' : fields.String(required=True, description='business hours'),
+        'no_of_vacancies' : fields.Integer(required=True, description='number of vacancies'),
+        'contact_number' : fields.String(required=True, description='contact number'),
+        'telephone_number' : fields.String(required=True, description='telephone number')
+    })
 
-class ItemDto:
-  api = Namespace('item', description="item related operations")
-  item = api.model('item', {
-    'id' : fields.Integer(readonly=True, description='item id'),
-    'item_name' : fields.String(required=True, description='item name'), 
-    'price' : fields.Float(required=True, min=0, description='item price'),
-    'image_url' : fields.String(readonly=True, description="item image")
-  })
+class RestaurantPublicDto:
+    restaurant = Model('restaurant', {
+        'restaurant_id' : fields.String(required=True, description='restaurant id'),
+        'restaurant_image' : fields.String(required=True, description='restaurant image'),
+        'restaurant_name' : fields.String(required=True, description='restaurant name'),
+        'restaurant_type' : fields.String(required=True, description='restaurant type'),
+        'location' : fields.String(required=True, description='restaurant location'),
+        'date_created' : fields.String(required=True, description='date created'),
+        'business_hours' : fields.String(required=True, description='business hours'),
+        'no_of_vacancies' : fields.Integer(required=True, description='number of vacancies'),
+        'contact_number' : fields.String(required=True, description='contact number'),
+        'telephone_number' : fields.String(required=True, description='telephone number'),
+        'owner_details' : {
+            'owner_id' : fields.Integer(description='user id'),
+            'email' : fields.String(description='user email'),
+            'first_name' : fields.String(description='user first name'),
+            'last_name' : fields.String(description='user last name'),
+            'contact_number' : fields.String(description='user contact number')
+        }
+    })

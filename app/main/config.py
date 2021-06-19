@@ -24,7 +24,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'postgres://rijaffxxqcprkb:00229ec11c6ddb945032ccdb6a3e80b0e16fc772582b346e651f6d2075b5b496@ec2-54-146-4-66.compute-1.amazonaws.com:5432/dac0g3or5iltdp'
+    SQLALCHEMY_DATABASE_URI = 'postgres://ftkeggiokxjwmg:7ba9d47861995dbcaf7b208847f600b2bd37ea5c769dc78e31c75df52a3e0b16@ec2-34-193-113-223.compute-1.amazonaws.com:5432/dekb1sdg96om65'
 
 config_by_name = dict(
     dev=DevelopmentConfig,

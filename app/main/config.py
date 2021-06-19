@@ -9,8 +9,8 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'development.db')
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:051098@localhost:5432/foodhub_development_db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'development.db')
+    # SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:051098@localhost:5432/foodhub_development_db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

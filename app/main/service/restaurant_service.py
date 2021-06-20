@@ -59,6 +59,25 @@ class RestaurantService:
             return response_object, 200
     
     @staticmethod
+    def delete_restaurant(restaurant_id):
+        restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+        if not restaurant:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'Restaurant not found'
+            }
+            return response_object, 404
+        else:
+            db.session.delete(restaurant)
+            db.session.commit()
+
+            response_object = {
+                'status' : 'success',
+                'message' : 'Restaurant successfully deleted'
+            }
+            return response_object, 200
+    
+    @staticmethod
     def get_restaurants():
         restaurants = [
         dict(

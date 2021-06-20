@@ -46,3 +46,10 @@ class Restaurant(Resource):
         """ Update an existing restaurant """
         return restaurant.update_restaurant(data=request.json, restaurant_id=id)
     
+    @api.doc('delete_a_restaurant')
+    @api.response(200, 'Restaurant successfully deleted')
+    @api.response(404, 'Restaurant not found')
+    def delete(self, id):
+        """ Delete an existing restaurant """
+        return restaurant.delete_restaurant(restaurant_id=id)
+    

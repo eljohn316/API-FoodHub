@@ -4,13 +4,14 @@ from flask_restx import Resource
 from app.main.util.dto import UserDto
 from app.main.util.decorator import owner_token_required, customer_token_required
 from app.main.service.user_service import UserService as user
+from app.main.service.auth_helper import Auth as auth
 
 api = UserDto.api
 
 _out_user = UserDto.user
 _in_user = UserDto.user_create
 _update_user = UserDto.user_update
-
+_image_upload = UserDto.set_profile
 
 @api.route('/')
 class UserList(Resource):
@@ -66,4 +67,13 @@ class GetUserByEmail(Resource):
         if not existing_user:
             api.abort(404, 'User not found')
         return existing_user
-    
+
+@api.route('/set-image')
+class SetProfile(Resource):
+    @api.doc('set_photo')
+    @api.response('Profile image set', 200)
+    @api.expect(_image_upload, validate=True)
+    def put(self):
+        """ Set profile image for user """
+        current_user, status = auth.get_logged_in_user(request)
+        return user.set_photo(data=request.json, current_user=current_user.get('data'))

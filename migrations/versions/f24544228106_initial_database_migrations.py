@@ -1,8 +1,8 @@
 """initial database migrations
 
-Revision ID: ef5445fec19c
+Revision ID: f24544228106
 Revises: 
-Create Date: 2021-06-20 14:28:53.557295
+Create Date: 2021-06-25 04:55:06.709911
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ef5445fec19c'
+revision = 'f24544228106'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,8 +44,11 @@ def upgrade():
     sa.Column('restaurant_type', sa.String(length=75), nullable=False),
     sa.Column('location', sa.String(length=155), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=False),
-    sa.Column('business_hours', sa.String(length=155), nullable=False),
-    sa.Column('no_of_vacancies', sa.Integer(), nullable=True),
+    sa.Column('opening_day', sa.String(length=55), nullable=True),
+    sa.Column('closing_day', sa.String(length=55), nullable=True),
+    sa.Column('opening_time', sa.String(length=15), nullable=False),
+    sa.Column('closing_time', sa.String(length=15), nullable=False),
+    sa.Column('no_of_vacancies', sa.Integer(), nullable=False),
     sa.Column('contact_number', sa.String(length=11), nullable=False),
     sa.Column('telephone_number', sa.String(length=8), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=True),

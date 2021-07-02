@@ -8,7 +8,7 @@ from app.main.service.auth_helper import Auth as auth
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        data, status = auth.get_logged_in_user(new_request)
+        data, status = auth.get_logged_in_user(request)
         token = data.get('data')
 
         if not token:

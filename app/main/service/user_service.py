@@ -98,3 +98,16 @@ class UserService:
                 'message': 'Some error occurred. Please try again.'
             }
             return response_object, 401
+
+    @staticmethod
+    def set_photo(data, current_user):
+        current_user = User.query.filter_by(id=current_user.get('user_id')).first()
+        current_user.profile_image = data['profile_image']
+        db.session.commit()
+        response_object = {
+            'status' : 'success',
+            'message' : 'Profile image set'
+        }
+        return response_object, 200
+        
+        

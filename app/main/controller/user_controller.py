@@ -12,6 +12,7 @@ _out_user = UserDto.user
 _in_user = UserDto.user_create
 _update_user = UserDto.user_update
 _image_upload = UserDto.set_profile
+_update_password = UserDto.update_password
 
 @api.route('/')
 class UserList(Resource):
@@ -77,3 +78,34 @@ class SetProfile(Resource):
         """ Set profile image for user """
         current_user, status = auth.get_logged_in_user(request)
         return user.set_photo(data=request.json, current_user=current_user.get('data'))
+
+@api.route('/check-password/<old_password>')
+class CheckPassword(Resource):
+    @api.doc('check_password')
+    @api.response('Password match', 200)
+    @api.response('Password does not match', 404)
+    def get(self, old_password):
+        """
+        Checks the user's password
+        """
+        current_user, status = auth.get_logged_in_user(request)
+        return user.check_user_password(old_password=old_password, current_user=current_user.get('data'))
+
+@api.route('/update-password')
+class UserPassword(Resource):
+    @api.doc('update_password')
+    @api.response('Password successfully updated', 200)
+    @api.expect(_update_password, validate=True)
+    def put(self):
+        """ Update user password """
+        current_user, status = auth.get_logged_in_user(request)
+        return user.update_password(data=request.json, current_user=current_user.get('data'))
+
+@api.route('/remove-image')
+class UserRemoveImage(Resource):
+    @api.doc('remove_profile_image')
+    @api.response('User profile removed', 200)
+    @api.response('User not found', 404)
+    def put(self):
+        current_user, status = auth.get_logged_in_user(request)
+        return user.remove_profile_image(current_user=current_user.get('data'))

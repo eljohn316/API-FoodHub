@@ -6,6 +6,7 @@ from app.main.config import key
 from app.main.model import restaurant
 from app.main.model.blacklist import BlackListToken
 from app.main.model.restaurant import Restaurant
+from app.main.model.reservation import Reservation
 
 class User(db.Model):
     """
@@ -16,6 +17,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     profile_image = db.Column(db.String(255), nullable=True)
+    profile_image2 = db.Column(db.String(255), nullable=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
@@ -24,7 +26,8 @@ class User(db.Model):
     user_role = db.Column(db.String(20), nullable=False)
     date_joined = db.Column(db.DateTime, nullable=False)
 
-    restaurants = db.relationship('Restaurant', backref='owner', lazy='dynamic')
+    restaurants = db.relationship('Restaurant', backref='owner', lazy='dynamic', cascade="all, delete")
+    reservations = db.relationship('Reservation', backref='customer', lazy='dynamic', cascade="all, delete")
 
     @property
     def password(self):

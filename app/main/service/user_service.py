@@ -103,11 +103,67 @@ class UserService:
     def set_photo(data, current_user):
         current_user = User.query.filter_by(id=current_user.get('user_id')).first()
         current_user.profile_image = data['profile_image']
+        current_user.profile_image2 = data['profile_image2']
         db.session.commit()
         response_object = {
             'status' : 'success',
             'message' : 'Profile image set'
         }
         return response_object, 200
+
+    
+    @staticmethod
+    def check_user_password(old_password, current_user):
+        current_user = User.query.filter_by(id=current_user.get('user_id')).first()
+        if current_user.check_password(old_password):
+            response_object = {
+                'status' : 'success',
+                'message' : 'Password match'
+            }
+            return response_object, 200
+        else:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'Password does not match'
+            }
+            return response_object, 404
+
+    @staticmethod
+    def update_password(data, current_user):
+        current_user = User.query.filter_by(id=current_user.get('user_id')).first()
+        if not current_user:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'User not found'
+            }
+            return response_object, 404
+        else:
+            current_user.password = data.get('new_password')
+            db.session.commit()
+            response_object = {
+                'status' : 'success',
+                'message' : 'Password updated'
+            }
+            return response_object, 200
         
-        
+    @staticmethod
+    def remove_profile_image(current_user):
+        user = User.query.filter_by(id=current_user.get('user_id')).first()
+        if not user:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'User not found'
+            }
+            return response_object, 404
+        else:
+            user.profile_image = None
+            user.profile_image2 = None
+            db.session.commit()
+            response_object = {
+                'status' : 'success',
+                'message' : 'User profile removed'
+            }
+            return response_object, 200
+
+            
+

@@ -14,6 +14,7 @@ _update_restaurant = RestaurantDto.update_restaurant
 _get_restaurant = RestaurantDto.get_restaurant
 _get_single_restaurant = RestaurantDto.get_single_restaurant
 _get_restaurant_menu = RestaurantDto.get_restaurant_menu
+_set_image = RestaurantDto.set_image
 
 @api.route('/')
 class RestaurantList(Resource):
@@ -75,9 +76,20 @@ class RestaurantPublic(Resource):
 class RestaurantMenu(Resource):
     @api.doc('get_restaurant_with_menu')
     @owner_token_required
-    @custom_marshal_with(_get_restaurant_menu, "Restaurant")
+    @custom_marshal_with(_get_restaurant_menu, name="Restaurant")
     def get(self, id):
         """
         Get restaurant with its menu
         """
         return restaurant.get_restaurant_with_menu(restaurant_id=id)
+
+@api.route('/<restaurant_name>/set-image')
+class RestaurantImage(Resource):
+    @api.doc('set_restaurant_image')
+    @owner_token_required
+    @api.expect(_set_image, validate=True)
+    def put(self, restaurant_name):
+        """
+        Sets the restaurant's image
+        """
+        return restaurant.set_restaurant_image(data=request.json, restaurant_name=restaurant_name)

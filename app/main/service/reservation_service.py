@@ -4,103 +4,203 @@ from app.main import db
 from app.main.model import reservation
 from app.main.model import restaurant
 from app.main.model.user import User
-from app.main.model.reservation import Reservation
+from app.main.model.reservation import AcceptedReservation, Reservation, DeclinedReservation
 from app.main.model.restaurant import Restaurant
 
 class ReservationService:
+
     """
     Reservation related operations
     """
 
     @staticmethod
     def create_reservation(data, current_user):
-        user = User.query.filter_by(id=current_user.get('user_id')).first()
-        if not user:
-            response_object = {
-                'status' : 'fail',
-                'message' : 'User does not exist'
-            }
-            return response_object, 404
-        else:
+        restaurant = Restaurant.query.filter_by(id=data['restaurant_id']).first()
+
+        if restaurant.no_of_vacancies >= data['num_of_persons'] and restaurant.no_of_vacancies != 0:
+            restaurant.no_of_vacancies -= data['num_of_persons'] 
+            
             reservation = Reservation(
                 customer_id = current_user.get('user_id'),
                 restaurant_id = data['restaurant_id'],
                 time = data['time'],
                 date = data['date'],
                 num_of_persons = data['num_of_persons'],
-                customer_email = data['customer_email'],
-                customer_contact_number = data['customer_contact_number'],
-                is_accepted = "False",
+                status = "Pending",
                 created_on = datetime.datetime.utcnow()
             )
+            
             db.session.add(reservation)
             db.session.commit()
+
             response_object = {
-                'status' : 'success',
-                'message' : 'Reservation successfully created'
+                "status" : "success",
+                "message" : "Reservation successfully created"
             }
+
             return response_object, 201
-        
+            
+        else:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'Restaurant has no vacancies at the moment'
+            }
+
+            return response_object, 409
+    
+
     @staticmethod
     def update_reservation(data, reservation_id):
         reservation = Reservation.query.filter_by(id=reservation_id).first()
-        if not reservation:
+        if reservation and reservation.status == "Pending":
+
+            restaurant = Restaurant.query.filter_by(id=reservation.restaurant_id).first()
+            if restaurant.no_of_vacancies >= data['num_of_persons'] and restaurant.no_of_vacancies != 0:
+                
+                restaurant.no_of_vacancies += reservation.num_of_persons
+                
+                reservation.num_of_persons = data["num_of_persons"]
+                reservation.time = data["time"]
+                reservation.date = data["date"]
+
+                restaurant.no_of_vacancies -= data['num_of_persons']
+
+                db.session.commit()
+
+                response_object = {
+                    'status' : 'success',
+                    'message' : 'Reservation successfully updated'
+                }
+                return response_object, 200
+            else:
+                response_object = {
+                    "status" : "fail",
+                    "message" : "Restaurant slots insufficient"
+                }
+
+                return response_object, 409
+
+        else:
             response_object = {
                 'status' : 'fail',
                 'message' : 'Reservation does not exist'
             }
             return response_object, 404
-        else:
-            reservation.num_of_persons = data["num_of_persons"]
-            reservation.time = data["time"]
-            reservation.date = data["date"]
-            reservation.customer_email = data["customer_email"]
-            reservation.customer_contact_number = data["customer_contact_number"]
-            db.session.commit()
-            response_object = {
-                'status' : 'success',
-                'message' : 'Reservation successfully updated'
-            }
-            return response_object, 200
+
     
     @staticmethod
     def cancel_reservation(reservation_id):
         reservation = Reservation.query.filter_by(id=reservation_id).first()
-        if not reservation:
+        if reservation and reservation.status == "Pending":
+            restaurant = Restaurant.query.filter_by(id=reservation.restaurant_id).first()
+            restaurant.no_of_vacancies += reservation.num_of_persons
+            
+            db.session.delete(reservation)
+            db.session.commit()
+            
+            response_object = {
+                'status' : 'success',
+                'message' : 'Reservation successfully cancelled'
+            }
+            
+            return response_object, 200
+            
+        else:
             response_object = {
                 'status' : 'fail',
                 'message' : 'Reservation does not exist'
             }
             return response_object, 404
-        else:
-            reservation.is_accepted = "Cancelled"
+
+    # @staticmethod
+    # def get_restaurant_reservations():
+    #     pas
+
+    @staticmethod
+    def accept_reservation(reservation_id, current_user):
+        reservation = AcceptedReservation.query.filter_by(id=reservation_id).first()
+        if not reservation:
+            current_reservation = Reservation.query.filter_by(id=reservation_id).first()
+            current_reservation.status = "Approved"
+
+            new_reservation = AcceptedReservation(
+                accepted_reservation_id=reservation_id,
+                owner_id=current_user.get('user_id'),
+                date_approved=datetime.datetime.utcnow()
+            )
+
+            db.session.add(new_reservation)
             db.session.commit()
+
             response_object = {
-                'status' : 'success',
-                'message' : 'Reservation successfully cancelled'
+                "status" : "success",
+                "message" : "Reservation request approved"
             }
-            return response_object, 200
+
+            return response_object, 201
+        else:
+            response_object = {
+                "status" : "fail",
+                "message" : "Reservation request already exists"
+            }
+
+            return response_object, 409
+    
+    @staticmethod
+    def decline_reservation(data, reservation_id, current_user):
+        reservation = DeclinedReservation.query.filter_by(id=reservation_id).first()
+        if not reservation:
+            current_reservation = Reservation.query.filter_by(id=reservation_id).first()
+            current_reservation.status = "Declined"
+
+            new_reservation = DeclinedReservation(
+                declined_reservation_id=reservation_id,
+                owner_id=current_user.get('user_id'),
+                message=data['message']
+            )
+
+            db.session.add(new_reservation)
+            db.session.commit()
+
+            response_object = {
+                "status" : "success",
+                "message" : "Reservation request declined"
+            }
+
+            return response_object, 201
+        else:
+            response_object = {
+                "status" : "fail",
+                "message" : "Reservation request already declined"
+            }
+
+            return response_object, 409
+
 
     @staticmethod
     def has_already_booked(current_user, restaurant_id):
-        # user = User.query.filter_by(id=current_user.get('user_id')).first()
-        # print(user.reservations.all())
-        # reservations = user.reservations.all()
-        # for reservation in reservations:
-        #     print(reservation," restaurant ids", reservation.restaurant_id)
-        
-        list_of_reservations = [reservation.restaurant_id for reservation in Reservation.query.filter_by(customer_id=current_user.get('user_id')).all()]
-        if restaurant_id in list_of_reservations:
+        reservation = Reservation.query.filter(Reservation.customer_id==current_user.get('user_id'), Reservation.restaurant_id==restaurant_id).first()
+        if not reservation:
             response_object = {
-                'status' : 'unavailable',
-                'message' : 'User have already booked'
+                "status" : "fail",
+                "message" : "User can still book"
+            }
+            return response_object, 200
+        else:
+            response_object = {
+                "status" : "success",
+                "data" : {
+                    'id' : reservation.id,
+                    'customer_id' : reservation.customer_id,
+                    'restaurant_id' : reservation.restaurant_id,
+                    'time' : reservation.time,
+                    'date' : reservation.date,
+                    'num_of_persons' : reservation.num_of_persons,
+                    'status' : reservation.status,
+                    'created_on' : str(reservation.created_on)
+                }
             }
             return response_object, 409
-        response_object = {
-            'status' : 'available',
-            'message' : 'User can still book'
-        }
-        return response_object, 200
 
     @staticmethod
     def get_reservation(reservation_id):
@@ -108,12 +208,10 @@ class ReservationService:
         return dict(
                 id = result.id,
                 customer_id = result.customer_id,
-                customer_email = result.customer_email,
-                customer_contact_number = result.customer_contact_number,
                 time = result.time,
                 date = result.date,
                 num_of_persons = result.num_of_persons,
-                is_accepted = result.is_accepted,
+                status = result.status,
                 created_on = result.created_on,
                 restaurant = dict(
                     restaurant_id = result.restaurant.id,
@@ -140,12 +238,10 @@ class ReservationService:
             dict(
                 id = reservation.id,
                 customer_id = reservation.customer_id,
-                customer_email = reservation.customer_email,
-                customer_contact_number = reservation.customer_contact_number,
                 time = reservation.time,
                 date = reservation.date,
                 num_of_persons = reservation.num_of_persons,
-                is_accepted = reservation.is_accepted,
+                status = reservation.status,
                 created_on = reservation.created_on,
                 restaurant = dict(
                     restaurant_id = restaurant.id,

@@ -1,4 +1,3 @@
-from base64 import decodestring
 from flask_restx import Model, Namespace, fields
 
 class UserDto:
@@ -50,9 +49,9 @@ class AuthDto:
 class RestaurantDto:
     api = Namespace('restaurant', description='restaurant related operations')
     create_restaurant = api.model('create_restaurant', {
-        'restaurant_image' : fields.String(required=True, description='restaurant image'),
-        'restaurant_thumbnail' : fields.String(required=True, description='restaurant image thumbnail'),
-        'restaurant_thumbnail2' : fields.String(required=True, description='restaurant image thumbnail'),
+        # 'restaurant_image' : fields.String(required=True, description='restaurant image'),
+        # 'restaurant_thumbnail' : fields.String(required=True, description='restaurant image thumbnail'),
+        # 'restaurant_thumbnail2' : fields.String(required=True, description='restaurant image thumbnail'),
         'restaurant_name' : fields.String(required=True, description='restaurant name'),
         'restaurant_type' : fields.String(required=True, description='restaurant type'),
         'location' : fields.String(required=True, description='restaurant location'),
@@ -64,6 +63,12 @@ class RestaurantDto:
         'contact_number' : fields.String(required=True, description='contact number'),
         'telephone_number' : fields.String(required=True, description='telephone number'),
         'owner_id' : fields.Integer(required=True, description='owner id')
+    })
+
+    set_image = api.model('set_restaurant_image', {
+        'restaurant_image' : fields.String(required=True, description='restaurant image'),
+        'restaurant_thumbnail' : fields.String(required=True, description='restaurant image thumbnail'),
+        'restaurant_thumbnail2' : fields.String(required=True, description='restaurant image thumbnail')
     })
 
     update_restaurant = api.model('update_restaurant', {
@@ -214,29 +219,23 @@ class ReservationDto:
         'restaurant_id' : fields.Integer(required=True, description='restaurant id'),
         'time' : fields.String(required=True, description='reservation time'),
         'date' : fields.String(required=True, description='reservation date'),
-        'num_of_persons' : fields.Integer(required=True, description='number of reservee'),
-        'customer_email' : fields.String(required=True, description='customer email'),
-        'customer_contact_number' : fields.String(required=True, description='customer contact number')
+        'num_of_persons' : fields.Integer(required=True, description='number of reservee')
     })
 
     update_reservation = api.model('update_reservation', {
         'time' : fields.String(required=True, description='reservation time'),
         'date' : fields.String(required=True, description='reservation date'),
-        'num_of_persons' : fields.Integer(required=True, description='number of reservee'),
-        'customer_email' : fields.String(required=True, description='customer email'),
-        'customer_contact_number' : fields.String(required=True, description='customer contact number')
+        'num_of_persons' : fields.Integer(required=True, description='number of reservee')
     })
 
     get_reservation = api.model('get_reservation', {
         'id' : fields.Integer(required=True, description='reservation id'),
         'restaurant_id' : fields.Integer(required=True, description='restaurant id'),
         'customer_id' : fields.Integer(required=True, description='customer id'),
-        'customer_email' : fields.String(required=True, description='customer email'),
-        'customer_contact_number' : fields.String(required=True, description='customer contact number'),
         'time' : fields.String(required=True, description='reservation time'),
         'date' : fields.String(required=True, description='reservation date'),
         'num_of_persons' : fields.Integer(required=True, description='number of reservee'),
-        'is_accepted' : fields.String(required=True, description='reservation status'),
+        'status' : fields.String(required=True, description='reservation status'),
         'created_on' : fields.String(description='reservation date created')
     })
 
@@ -262,14 +261,16 @@ class ReservationDto:
     get_customer_reservation = api.model('get_reservation', {
         'id' : fields.Integer(required=True, description='reservation id'),
         'customer_id' : fields.Integer(required=True, description='customer id'),
-        'customer_email' : fields.String(required=True, description='customer email'),
-        'customer_contact_number' : fields.String(required=True, description='customer contact number'),
         'time' : fields.String(required=True, description='reservation time'),
         'date' : fields.String(required=True, description='reservation date'),
         'num_of_persons' : fields.Integer(required=True, description='number of reservee'),
-        'is_accepted' : fields.String(required=True, description='reservation status'),
+        'status' : fields.String(required=True, description='reservation status'),
         'created_on' : fields.String(description='reservation date created'),
         'restaurant' : fields.Nested(restaurant)
+    })
+
+    decline_reservation = api.model('decline_reservation', {
+        'message' : fields.String(description='owner message')
     })
 
     

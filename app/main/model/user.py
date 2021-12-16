@@ -28,6 +28,8 @@ class User(db.Model):
 
     restaurants = db.relationship('Restaurant', backref='owner', lazy='dynamic', cascade="all, delete")
     reservations = db.relationship('Reservation', backref='customer', lazy='dynamic', cascade="all, delete")
+    accepted_reservations = db.relationship('AcceptedReservation', backref='restaurant_owner', lazy='dynamic', cascade="all, delete")
+    declined_reservations = db.relationship('DeclinedReservation', backref='restaurant_owner', lazy='dynamic', cascade="all, delete")
 
     @property
     def password(self):

@@ -1,11 +1,10 @@
 import datetime
 
 from app.main import db
-from app.main.model import reservation
-from app.main.model import restaurant
 from app.main.model.user import User
 from app.main.model.reservation import AcceptedReservation, Reservation, DeclinedReservation
 from app.main.model.restaurant import Restaurant
+
 
 class ReservationService:
 
@@ -23,6 +22,7 @@ class ReservationService:
             reservation = Reservation(
                 customer_id = current_user.get('user_id'),
                 restaurant_id = data['restaurant_id'],
+                restaurant_owner_id = data['restaurant_owner_id'],
                 time = data['time'],
                 date = data['date'],
                 num_of_persons = data['num_of_persons'],
@@ -118,7 +118,7 @@ class ReservationService:
 
     @staticmethod
     def accept_reservation(reservation_id, current_user):
-        reservation = AcceptedReservation.query.filter_by(id=reservation_id).first()
+        reservation = AcceptedReservation.query.filter_by(accepted_reservation_id=reservation_id).first()
         if not reservation:
             current_reservation = Reservation.query.filter_by(id=reservation_id).first()
             current_reservation.status = "Approved"
@@ -264,3 +264,30 @@ class ReservationService:
             for reservation, restaurant in db.session.query(Reservation, Restaurant).join(Restaurant).filter(Reservation.customer_id == current_user.get('user_id')).all()
         ]
         return results
+    
+    @staticmethod
+    def get_restaurant_bookings(current_user):
+        reservations = [
+            dict(
+                reservation_id=reservation.id,
+                time = reservation.time,
+                date = reservation.date,
+                num_of_persons = reservation.num_of_persons,
+                status = reservation.status,
+                created_on = reservation.created_on,
+                customer_details = dict(
+                    customer_id = user.id,
+                    profile_image = user.profile_image,
+                    profile_image2 = user.profile_image2,
+                    email = user.email,
+                    first_name = user.first_name,
+                    last_name = user.last_name,
+                    contact_number = user.contact_number
+                )
+            )
+            for reservation, user in db.session.query(Reservation, User).join(User). \
+                filter(Reservation.restaurant_owner_id == current_user.get('user_id')). \
+                    filter(Reservation.status == "Pending"). \
+                        all()
+        ]
+        return reservations

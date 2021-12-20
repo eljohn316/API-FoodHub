@@ -13,6 +13,7 @@ _get_reservation = ReservationDto.get_reservation
 _get_customer_reservation = ReservationDto.get_customer_reservation
 _update_reservation = ReservationDto.update_reservation
 _decline_reservation = ReservationDto.decline_reservation
+_restaurant_bookings = ReservationDto.reservation_bookings
 
 @api.route('/')
 class ReservationList(Resource):
@@ -83,6 +84,7 @@ class Reservation(Resource):
 #         """
 #         return reservation.cancel_reservation(reservation_id=reservation_id)
 
+
 @api.route('/check/<restaurant_id>')
 class CheckReservation(Resource):
     @api.doc('check_reservation')
@@ -102,7 +104,7 @@ class ApproveReservation(Resource):
         return reservation.accept_reservation(reservation_id, current_user.get('data'))
 
 @api.route('/decline/<reservation_id>')
-class ApproveReservation(Resource):
+class DeclineReservation(Resource):
     @api.doc('decline_a_reservation')
     @api.expect(_decline_reservation, validate=True)
     @owner_token_required
@@ -112,3 +114,16 @@ class ApproveReservation(Resource):
         """
         current_user, status = auth.get_logged_in_user(request)
         return reservation.decline_reservation(request.json, reservation_id, current_user.get('data'))
+
+@api.route('/pending')
+class RestaurantReservation(Resource):
+    @api.doc('get_restaurant_reservations')
+    @owner_token_required
+    @custom_marshal_with(_restaurant_bookings, name="Reservation")
+    def get(self):
+        """
+        Get Restaurant Bookings
+        """
+        current_user, status = auth.get_logged_in_user(request)
+        return reservation.get_restaurant_bookings(current_user.get('data'))
+        

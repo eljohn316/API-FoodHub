@@ -217,6 +217,7 @@ class ReservationDto:
     api = Namespace('reservation', description='reservation related details')
     create_reservation = api.model('create_reservation', {
         'restaurant_id' : fields.Integer(required=True, description='restaurant id'),
+        'restaurant_owner_id': fields.Integer(required=True, description='restaurant owner id'),
         'time' : fields.String(required=True, description='reservation time'),
         'date' : fields.String(required=True, description='reservation date'),
         'num_of_persons' : fields.Integer(required=True, description='number of reservee')
@@ -273,4 +274,23 @@ class ReservationDto:
         'message' : fields.String(description='owner message')
     })
 
+    user = api.model('user', {
+        'customer_id' : fields.String(description='user id'),
+        'profile_image' : fields.String(description='user image'),
+        'profile_image2' : fields.String(description='user secondary profile image'),
+        'email' : fields.String(description='user email'),
+        'first_name' : fields.String(description='user first name'),
+        'last_name' : fields.String(description='user last name'),
+        'contact_number' : fields.String(description='user contact number')
+    })
+
+    reservation_bookings = api.model('restaurant_bookings', {
+        'reservation_id' : fields.Integer(description='reservation id'),
+        'time' : fields.String(required=True, description='reservation time'),
+        'date' : fields.String(required=True, description='reservation date'),
+        'num_of_persons' : fields.Integer(required=True, description='number of reservee'),
+        'status' : fields.String(required=True, description='reservation status'),
+        'created_on' : fields.String(description='reservation date created'),
+        'customer_details' : fields.Nested(user)
+    })
     

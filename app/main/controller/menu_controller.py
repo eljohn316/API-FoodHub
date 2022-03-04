@@ -32,6 +32,7 @@ class Menu(Resource):
         """
         Get an existing restaurant menu
         """
+        print('I was executed')
         return MenuService.get_menu(id=id)
 
     @owner_token_required
@@ -54,3 +55,25 @@ class Menu(Resource):
         Delete an existing restaurant menu
         """
         return MenuService.delete_menu(id=id)
+
+@api.route('/multiple')
+class AddMultipleMenu(Resource):
+    @api.doc('app_multiple_menus')
+    @api.response(201, 'Menu successfully added')
+    @api.expect([_create_menu], validate=True)
+    def post(self):
+        """
+        Add multiple menu items
+        """
+        return MenuService.add_multiple_menu(data=request.json)
+
+
+@api.route('/check/<menu_name>')
+class CheckMenu(Resource):
+    @owner_token_required
+    @api.doc('check_menu')
+    def get(self, menu_name):
+        """
+        Check if menu exists
+        """
+        return MenuService.check_menu(menu_name)

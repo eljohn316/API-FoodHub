@@ -48,4 +48,4 @@ class DeclinedReservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     declined_reservation_id = db.Column(db.Integer, db.ForeignKey('reservations.id'), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    message = db.Column(db.String(155))
+    message = db.Column(db.Text)

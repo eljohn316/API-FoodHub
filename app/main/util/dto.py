@@ -1,7 +1,8 @@
 from flask_restx import Model, Namespace, fields
+from flask_cors import cross_origin
 
 class UserDto:
-    api = Namespace('user', description='user related operations')
+    api = Namespace('user', description='user related operations', decorators=[cross_origin()])
     user = api.model('user', {
         'id' : fields.String(description='user id'),
         'profile_image' : fields.String(description='user image'),
@@ -40,14 +41,14 @@ class UserDto:
     })
 
 class AuthDto:
-    api = Namespace('auth', description='authentication related operations')
+    api = Namespace('auth', description='authentication related operations', decorators=[cross_origin()])
     user_auth = api.model('auth_details', {
         'email': fields.String(required=True, description='user email '),
         'password': fields.String(required=True, description='user password '),
     })
 
 class RestaurantDto:
-    api = Namespace('restaurant', description='restaurant related operations')
+    api = Namespace('restaurant', description='restaurant related operations', decorators=[cross_origin()])
     create_restaurant = api.model('create_restaurant', {
         # 'restaurant_image' : fields.String(required=True, description='restaurant image'),
         # 'restaurant_thumbnail' : fields.String(required=True, description='restaurant image thumbnail'),
@@ -189,7 +190,7 @@ class RestaurantPublicDto:
     })
 
 class MenuDto:
-    api = Namespace('menu', description='menu related operations')
+    api = Namespace('menu', description='menu related operations', decorators=[cross_origin()])
     add_menu = api.model('create_menu', {
         'menu_image' : fields.String(required=False, description='menu image'),
         'menu_name' : fields.String(required=True, description='menu name'),
@@ -214,7 +215,7 @@ class MenuDto:
     })
 
 class ReservationDto:
-    api = Namespace('reservation', description='reservation related details')
+    api = Namespace('reservation', description='reservation related details', decorators=[cross_origin()])
     create_reservation = api.model('create_reservation', {
         'restaurant_id' : fields.Integer(required=True, description='restaurant id'),
         'restaurant_owner_id': fields.Integer(required=True, description='restaurant owner id'),
@@ -291,6 +292,7 @@ class ReservationDto:
         'num_of_persons' : fields.Integer(required=True, description='number of reservee'),
         'status' : fields.String(required=True, description='reservation status'),
         'created_on' : fields.String(description='reservation date created'),
-        'customer_details' : fields.Nested(user)
+        'customer_details' : fields.Nested(user),
+        'restaurant_details' : fields.Nested(restaurant)
     })
     

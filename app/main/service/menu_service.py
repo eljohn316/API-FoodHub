@@ -29,6 +29,32 @@ class MenuService:
             }
             return response_object, 409
     
+
+    @staticmethod
+    def add_multiple_menu(data):
+        menu_items = []
+
+        for menu in data:
+
+            new_menu = Menu(
+                menu_image=menu['menu_image'],
+                menu_name=menu['menu_name'],
+                is_available=menu['is_available'],
+                price=menu['price'],
+                restaurant_id=menu['restaurant_id']
+            )
+            menu_items.append(new_menu)
+
+        db.session.add_all(menu_items)
+        db.session.commit()
+
+        response_object = {
+            'status' : 'success',
+            'message' : 'Menu items successfully added'
+        }
+        return response_object, 201
+
+    
     @staticmethod
     def update_menu(id, data):
         current_menu = Menu.query.filter_by(id=id).first()
@@ -70,3 +96,20 @@ class MenuService:
     @staticmethod
     def get_menu(id):
         return Menu.query.filter_by(id=id).first()
+
+    
+    @staticmethod
+    def check_menu(name):
+        menu = Menu.query.filter_by(menu_name=name).first()
+        if not menu:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'Menu not found'
+            }
+            return response_object, 404
+        else:
+            response_object = {
+                'status' : 'success',
+                'message' : 'Menu found'
+            }
+            return response_object, 200

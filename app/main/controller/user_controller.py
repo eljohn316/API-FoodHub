@@ -61,13 +61,12 @@ class User(Resource):
 @api.response(404, 'User not found')
 class GetUserByEmail(Resource):
     @api.doc('get_user_by_email')
-    @api.marshal_list_with(_out_user, envelope='user')
     def get(self, email):
         """ Get user by email"""
-        existing_user = user.get_user_by_email(email=email)
-        if not existing_user:
-            api.abort(404, 'User not found')
-        return existing_user
+        # existing_user = user.get_user_by_email(email=email)
+        # if not existing_user:
+        #     api.abort(404, 'User not found')
+        return user.get_user_by_email(email=email)
 
 @api.route('/set-image')
 class SetProfile(Resource):

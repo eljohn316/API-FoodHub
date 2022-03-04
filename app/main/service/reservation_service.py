@@ -148,7 +148,7 @@ class ReservationService:
     
     @staticmethod
     def decline_reservation(data, reservation_id, current_user):
-        reservation = DeclinedReservation.query.filter_by(id=reservation_id).first()
+        reservation = DeclinedReservation.query.filter_by(declined_reservation_id=reservation_id).first()
         if not reservation:
             current_reservation = Reservation.query.filter_by(id=reservation_id).first()
             current_reservation.status = "Declined"
@@ -283,11 +283,73 @@ class ReservationService:
                     first_name = user.first_name,
                     last_name = user.last_name,
                     contact_number = user.contact_number
+                ),
+                restaurant_details = dict(
+                    restaurant_id = restaurant.id,
+                    restaurant_image = restaurant.restaurant_image,
+                    restaurant_thumbnail = restaurant.restaurant_thumbnail,
+                    restaurant_thumbnail2 = restaurant.restaurant_thumbnail2,
+                    restaurant_name = restaurant.restaurant_name,
+                    restaurant_type = restaurant.restaurant_type,
+                    location = restaurant.location,
+                    date_created = restaurant.date_created,
+                    opening_day = restaurant.opening_day,
+                    closing_day = restaurant.closing_day,
+                    opening_time = restaurant.opening_time,
+                    closing_time = restaurant.closing_time,
+                    no_of_vacancies = restaurant.no_of_vacancies,
+                    contact_number = restaurant.contact_number,
+                    telephone_number = restaurant.telephone_number
                 )
             )
-            for reservation, user in db.session.query(Reservation, User).join(User). \
-                filter(Reservation.restaurant_owner_id == current_user.get('user_id')). \
-                    filter(Reservation.status == "Pending"). \
-                        all()
+            for user, reservation, restaurant in db.session.query(User, Reservation, Restaurant).\
+                select_from(User).\
+                join(Reservation).\
+                join(Restaurant).\
+                filter(Reservation.restaurant_owner_id == current_user.get('user_id')).
+                all()
         ]
         return reservations
+    
+    @staticmethod
+    def get_restaurant_booking(reservation_id):
+        user, reservation, restaurant = db.session.query(User, Reservation, Restaurant).\
+                select_from(User).\
+                join(Reservation).\
+                join(Restaurant).\
+                filter(Reservation.id == int(reservation_id)).first()
+                
+        return dict(
+                reservation_id=reservation.id,
+                time = reservation.time,
+                date = reservation.date,
+                num_of_persons = reservation.num_of_persons,
+                status = reservation.status,
+                created_on = reservation.created_on,
+                customer_details = dict(
+                    customer_id = user.id,
+                    profile_image = user.profile_image,
+                    profile_image2 = user.profile_image2,
+                    email = user.email,
+                    first_name = user.first_name,
+                    last_name = user.last_name,
+                    contact_number = user.contact_number
+                ),
+                restaurant_details = dict(
+                    restaurant_id = restaurant.id,
+                    restaurant_image = restaurant.restaurant_image,
+                    restaurant_thumbnail = restaurant.restaurant_thumbnail,
+                    restaurant_thumbnail2 = restaurant.restaurant_thumbnail2,
+                    restaurant_name = restaurant.restaurant_name,
+                    restaurant_type = restaurant.restaurant_type,
+                    location = restaurant.location,
+                    date_created = restaurant.date_created,
+                    opening_day = restaurant.opening_day,
+                    closing_day = restaurant.closing_day,
+                    opening_time = restaurant.opening_time,
+                    closing_time = restaurant.closing_time,
+                    no_of_vacancies = restaurant.no_of_vacancies,
+                    contact_number = restaurant.contact_number,
+                    telephone_number = restaurant.telephone_number
+                )
+            )

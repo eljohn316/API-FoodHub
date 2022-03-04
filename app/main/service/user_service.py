@@ -1,4 +1,5 @@
 import datetime
+from urllib import response
 
 from app.main import db
 from app.main.model.user import User
@@ -79,7 +80,28 @@ class UserService:
     
     @staticmethod
     def get_user_by_email(email):
-        return User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            response_object = {
+                'status' : 'fail',
+                'message' : 'User not found'
+            }
+            return response_object, 404
+        else:
+            response_object = {
+                'status' : 'success',
+                'user' : {
+                    'id' : user.id,
+                    'profile_image' : user.profile_image,
+                    'profile_image2' : user.profile_image2,
+                    'first_name' : user.first_name,
+                    'last_name' : user.last_name,
+                    'email' : user.email,
+                    'contact_number' : user.contact_number,
+                    'user_role' : user.user_role
+                }
+            }
+            return response_object, 200
     
     @staticmethod
     def generate_token(user):
@@ -114,7 +136,8 @@ class UserService:
     
     @staticmethod
     def check_user_password(old_password, current_user):
-        current_user = User.query.filter_by(id=current_user.get('user_id')).first()
+        current_user = User.query.filter_by(id=current_user.get('user_id')).first_or_404(description='No user found.')
+        print(current_user)
         if current_user.check_password(old_password):
             response_object = {
                 'status' : 'success',

@@ -126,4 +126,13 @@ class RestaurantReservation(Resource):
         """
         current_user, status = auth.get_logged_in_user(request)
         return reservation.get_restaurant_bookings(current_user.get('data'))
-        
+
+@api.route('/pending/<reservation_id>')
+class ViewPendingReservation(Resource):
+    @api.doc('get_a_single_reservation')
+    @custom_marshal_with(_restaurant_bookings, name="Reservation")
+    def get(self, reservation_id):
+        """
+        Get a single reservation
+        """
+        return reservation.get_restaurant_booking(reservation_id)

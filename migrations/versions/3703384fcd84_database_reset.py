@@ -1,8 +1,8 @@
-"""initial database migration
+"""database reset
 
-Revision ID: d01c7cccec0d
+Revision ID: 3703384fcd84
 Revises: 
-Create Date: 2021-12-14 21:33:13.283390
+Create Date: 2022-03-04 15:02:30.912681
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd01c7cccec0d'
+revision = '3703384fcd84'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -74,6 +74,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('customer_id', sa.Integer(), nullable=False),
     sa.Column('restaurant_id', sa.Integer(), nullable=False),
+    sa.Column('restaurant_owner_id', sa.Integer(), nullable=True),
     sa.Column('time', sa.String(length=20), nullable=False),
     sa.Column('date', sa.String(length=50), nullable=False),
     sa.Column('num_of_persons', sa.Integer(), nullable=False),
@@ -96,7 +97,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('declined_reservation_id', sa.Integer(), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=True),
-    sa.Column('message', sa.String(length=155), nullable=True),
+    sa.Column('message', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['declined_reservation_id'], ['reservations.id'], ),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
